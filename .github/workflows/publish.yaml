@@ -1,0 +1,29 @@
+name: Publish NuGet Package to GitHub Packages
+
+on:
+  push:
+    tags:
+      - 'v*'  # e.g., v1.0.0
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧾 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🛠 Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+          source-url: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+
+      - name: 🏗 Build
+        run: dotnet build src/BlazorFlow.csproj -c Release
+
+      - name: 📦 Pack
+        run: dotnet pack src/BlazorFlow.csproj -c Release --no-build
+
+      - name: 🚀 Publish to GitHub Packages
+        run: dotnet nuget push src/bin/Release/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
