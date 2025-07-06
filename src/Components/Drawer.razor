@@ -1,0 +1,24 @@
+<aside id="@Id"
+     class="@DrawerClass"
+     tabindex="-1"
+     aria-labelledby="@LabelId"
+     @onclick:stopPropagation>
+    <div class="flex flex-wrap items-center justify-between">
+        <div id="@LabelId" role="heading" class="text-2xl font-medium text-gray-700">
+            @Title
+        </div>
+
+        <Button Type="ButtonType.Button"
+                Size="ButtonSize.ExtraSmall"
+                VisualPlacement="VisualPlacement.Start"
+                Icon="@Icons.Close"  
+                IconSize="Constants.Size.Medium" 
+                Color="Color.Light" 
+                Variant="Variant.Filled"
+                OnClick="Hide">
+        </Button>
+    </div>
+    
+
+    @ChildContent
+</aside>

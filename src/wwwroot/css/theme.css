@@ -1,0 +1,60 @@
+:root {
+    --background: #2C2C2B;
+    --foreground: #f3f4f6;
+
+    /* Primary */
+    --primary: #277F2D;
+    --primary-hover: #016630;
+    --primary-foreground: #FFFFFF;
+
+    /* Secondary */
+    --secondary: #C8EECB;
+    --secondary-hover: #7BF1A8;
+    --secondary-foreground: #2D2D2C;
+
+    /* Tertiary */
+    --tertiary: #F3F4F5;
+    --tertiary-hover: #AFAFAF;
+    --tertiary-foreground: #2D2D2C;
+
+    /* Error */
+    --error: #F10C22;
+    --error-hover: #9F0712;
+    --error-foreground: #FFFFFF;
+
+    /* Success */
+    --success: #28C76F;
+    --success-hover: #20B162;
+    --success-foreground: #ffffff;
+
+    /* Info */
+    --info: #00CFE8;
+    --info-hover: #00B6CF;
+    --info-foreground: #ffffff;
+
+    /* Warning */
+    --warning: #FF9F43;
+    --warning-hover: #FF7F00;
+    --warning-foreground: #000000;
+
+    /* Surface */
+    --surface: #F4F5F7;
+    --surface-hover: #EDEFF1;
+    --surface-foreground: #212121;
+
+
+    /* Sidebar */
+    --sidebar-width: 300px;
+    --sidebar-width-collapsed: 90px;
+
+    /* Radius */
+    --radius-card: 0.5rem;
+
+    /* Fonts */
+    --font-sans: 'Gotham Pro', sans-serif;
+    --font-body: 'Gotham Pro', sans-serif;
+    --font-mono: 'Courier New', monospace;
+}
+
+.dark {
+}
