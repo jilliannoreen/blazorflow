@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorFlow.Services;
 
-public abstract class FlowbitePage : ComponentBase
+public abstract class FlowbiteBase : ComponentBase
 {
     [Inject]
     protected IFlowbiteService FlowbiteService { get; set; } = default!;
