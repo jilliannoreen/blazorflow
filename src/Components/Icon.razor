@@ -1,0 +1,13 @@
+<svg @attributes="UserAttributes" class="@IconClass" style="@Style" focusable="false" viewBox="@ViewBox" aria-hidden="true" role="img">
+    @if (Title is not null)
+    {
+        <title>@Title</title>
+    }
+    
+    @((MarkupString)SvgIcon)
+</svg>
+
+@code {
+    
+
+}
