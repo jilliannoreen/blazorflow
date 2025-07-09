@@ -1,3 +1,5 @@
+@using BlazorFlow.Enums
+
 <aside id="@Id"
      class="@DrawerClass"
      tabindex="-1"
@@ -12,7 +14,7 @@
                 Size="ButtonSize.ExtraSmall"
                 VisualPlacement="VisualPlacement.Start"
                 Icon="@Icons.Close"  
-                IconSize="Constants.Size.Medium" 
+                IconSize="@Size." 
                 Color="Color.Light" 
                 Variant="Variant.Filled"
                 OnClick="Hide">
