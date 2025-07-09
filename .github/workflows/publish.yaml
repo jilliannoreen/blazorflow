@@ -23,7 +23,9 @@ jobs:
 
       - name: 🔧 Extract version from tag
         id: extract_version
-        run: echo "VERSION=${GITHUB_REF##*/}" >> $GITHUB_EN
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: 🏗 Build
         run: dotnet build src/BlazorFlow.csproj -c Release
