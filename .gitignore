@@ -509,7 +509,6 @@ package-lock.json
 *.nuget.targets
 
 # Blazor-specific
-**/wwwroot/css/output.css
 **/staticwebassets.*.json
 **/project.assets.json
 **/rider.project.*

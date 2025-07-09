@@ -109,7 +109,7 @@ public partial class Drawer
     /// Builds the full Tailwind class string for the drawer element.
     /// </summary>
     private string DrawerClass => ClassBuilder
-        .Default("fixed z-40 overflow-y-auto transition-transform p-6 bg-(--foregound)")
+        .Default("fixed z-40 overflow-y-auto transition-transform p-6 bg-(--foreground)")
         .AddClass(GetPositionClass())
         .AddClass(GetSizeClass())
         .Build();
