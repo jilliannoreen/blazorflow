@@ -1,0 +1,41 @@
+﻿@using Microsoft.AspNetCore.Components.Routing
+
+<li class="mb-1">
+    @if (ChildContent is not null)
+    {
+        <div @onclick="ToggleExpand" class="@NavItemClass">
+            <div class="@NavItemContentClass">
+                @if (!string.IsNullOrWhiteSpace(Icon))
+                {
+                    <SvgIcon Icon="@Icon" Size="Size.Large" fill="none"/>
+                }
+                <span class="@NavItemVisibilityClass">@Label</span>
+            </div>
+            
+            <span class="text-gray-600 transition-transform duration-200 @NavItemVisibilityClass @ArrowRotation">
+                <SvgIcon Icon="@Icons.ChevronRight" Size="Size.Large" fill="none"/>
+            </span>
+        </div>
+
+        @if (IsExpanded && !IsCollapsed)
+        {
+            <ul class="ml-6 mt-1 space-y-1 transition-all duration-300">
+                @ChildContent
+            </ul>
+        }
+    }
+    else
+    {
+        <NavLink class="@NavItemClass"
+                 href="@Href"
+                 Match="@Match"
+                 ActiveClass="!text-gray-800 !bg-(--color-secondary)">
+            @if (!string.IsNullOrWhiteSpace(Icon))
+            {
+                <SvgIcon Icon="@Icon" Size="Size.Large" fill="none"/>
+            }
+            <span class="@NavItemVisibilityClass">@Label</span>
+        </NavLink>
+    }
+</li>
+
