@@ -1,4 +1,4 @@
-namespace PassCredit.Portal.WEB.Constants;
+namespace BlazorFlow.Enums;
 
 public enum DrawerPosition
 {

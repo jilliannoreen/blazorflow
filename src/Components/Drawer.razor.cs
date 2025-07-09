@@ -1,7 +1,7 @@
+using BlazorFlow.Enums;
 using BlazorFlow.Services;
 using BlazorFlow.Utilities;
 using Microsoft.AspNetCore.Components;
-using PassCredit.Portal.WEB.Constants;
 
 namespace BlazorFlow.Components;
 
