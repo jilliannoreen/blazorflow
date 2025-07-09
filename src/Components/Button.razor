@@ -1,0 +1,132 @@
+﻿@using BlazorFlow.Enums
+@using BlazorFlow.Utilities
+@using Color = BlazorFlow.Enums.Color
+@using Size = BlazorFlow.Enums.Size
+
+<button type="@Type.ToString().ToLower()"
+    class="@ButtonClass"
+    disabled="@Disabled"
+    @onclick="HandleClick"
+    @attributes="AdditionalAttributes">
+    @if (!string.IsNullOrWhiteSpace(Icon) && VisualPlacement == VisualPlacement.Start)
+    {
+        <SvgIcon Icon="@Icon" Size="@IconSize"/>
+    }
+
+    @if (ChildContent is not null)
+    {
+        <span class="text-center w-full">@ChildContent</span>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Icon) && VisualPlacement == VisualPlacement.End)
+    {
+        <SvgIcon Icon="@Icon" Size="@IconSize"/>
+    }
+</button>
+
+@code {
+    [Parameter] public ButtonType Type { get; set; } = ButtonType.Button;
+    [Parameter] public ButtonSize Size { get; set; } = ButtonSize.Base;
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public Size IconSize { get; set; } = Enums.Size.Medium;
+    [Parameter] public VisualPlacement VisualPlacement { get; set; } = VisualPlacement.None;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool IsFloating { get; set; } = false;
+    [Parameter] public bool FullWidth { get; set; } = false;
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+    [Parameter] public bool FullRounded { get; set; }
+    [Parameter] public Variant Variant { get; set; } = Variant.Filled;
+    [Parameter] public Color Color { get; set; } = Color.Primary;
+    
+    private string ButtonClass => ClassBuilder
+        .Default("inline-flex items-center align-middle gap-1 font-medium leading-none text-center rounded-lg focus:ring-2 focus:outline-none cursor-pointer")
+        .AddClass(GetSizeClass())
+        .AddClass(GetVariantColorClass())  
+        .AddClass("fixed bottom-6 right-6 rounded-full shadow-lg z-50", IsFloating)
+        .AddClass("opacity-50 cursor-not-allowed", Disabled)
+        .AddClass("w-full", FullWidth)
+        .AddClass("rounded-full!", FullRounded)
+        .AddClass(Class)
+        .Build();
+    
+    private async Task HandleClick(MouseEventArgs e)
+    {
+        if (!Disabled)
+        {
+            await OnClick.InvokeAsync(e);
+        }
+    }
+
+    private string GetSizeClass()
+    {
+        return Size switch
+        {
+            ButtonSize.ExtraSmall => "px-3 py-2 text-xs",
+            ButtonSize.Small => "px-3 py-2 text-sm",
+            ButtonSize.Large => "px-5 py-3 text-base",
+            ButtonSize.ExtraLarge => "px-6 py-3.5 text-base",
+            _ => "px-5 py-2.5 text-sm"
+        };
+    }
+    
+    private string GetVariantColorClass()
+    {
+        var map = new Dictionary<(Color, Variant), string>
+        {
+            // Primary
+            { (Color.Primary, Variant.Filled), "text-(--primary-foreground) bg-(--primary) hover:bg-(--primary-hover)" },
+            { (Color.Primary, Variant.Outlined), "text-(--primary) border border-(--primary) hover:bg-(--primary) hover:text-(--primary-foreground) bg-transparent" },
+            { (Color.Primary, Variant.Text), "text-(--primary) hover:text-(--primary-hover) bg-transparent" },
+
+            // Secondary
+            { (Color.Secondary, Variant.Filled), "text-(--secondary-foreground) bg-(--secondary) hover:bg-(--secondary-hover)" },
+            { (Color.Secondary, Variant.Outlined), "text-(--secondary) border border-(--secondary) hover:bg-(--secondary) hover:text-(--secondary-foreground) bg-transparent" },
+            { (Color.Secondary, Variant.Text), "text-(--secondary) hover:text-(--secondary-hover) bg-transparent" },
+
+            // Tertiary
+            { (Color.Tertiary, Variant.Filled), "text-(--tertiary-foreground) bg-(--tertiary) hover:bg-(--tertiary-hover)" },
+            { (Color.Tertiary, Variant.Outlined), "text-(--tertiary) border border-(--tertiary) hover:bg-(--tertiary-hover) bg-transparent" },
+            { (Color.Tertiary, Variant.Text), "text-(--tertiary) hover:text-(--tertiary-hover) bg-transparent" },
+
+            // Success
+            { (Color.Success, Variant.Filled), "text-(--success-foreground) bg-(--success) hover:bg-(--success-hover)" },
+            { (Color.Success, Variant.Outlined), "text-(--success) border border-(--success) hover:bg-(--success) hover:text-(--success-foreground) bg-transparent" },
+            { (Color.Success, Variant.Text), "text-(--success) hover:text-(--success-hover) bg-transparent" },
+
+            // Info
+            { (Color.Info, Variant.Filled), "text-(--info-foreground) bg-(--info) hover:bg-(--info-hover)" },
+            { (Color.Info, Variant.Outlined), "text-(--info) border border-(--info) hover:bg-(--info) hover:text-(--info-foreground) bg-transparent" },
+            { (Color.Info, Variant.Text), "text-(--info) hover:text-(--info-hover) bg-transparent" },
+
+            // Warning
+            { (Color.Warning, Variant.Filled), "text-(--warning-foreground) bg-(--warning) hover:bg-(--warning-hover)" },
+            { (Color.Warning, Variant.Outlined), "text-(--warning) border border-(--warning) hover:bg-(--warning) hover:text-(--warning-foreground) bg-transparent" },
+            { (Color.Warning, Variant.Text), "text-(--warning) hover:text-(--warning-hover) bg-transparent" },
+
+            // Error
+            { (Color.Error, Variant.Filled), "text-(--error-foreground) bg-(--error) hover:bg-(--error-hover)" },
+            { (Color.Error, Variant.Outlined), "text-(--error) border border-(--error) hover:bg-(--error) hover:text-(--error-foreground) bg-transparent" },
+            { (Color.Error, Variant.Text), "text-(--error) hover:text-(--error-hover) bg-transparent" },
+
+            // Surface
+            { (Color.Surface, Variant.Filled), "text-(--surface-foreground) bg-(--surface) hover:bg-(--surface-hover)" },
+            { (Color.Surface, Variant.Outlined), "text-(--surface) border border-(--surface) hover:bg-(--surface) hover:bg-(--surface-foreground) bg-transparent" },
+            { (Color.Surface, Variant.Text), "text-(--surface) hover:text-(--surface-hover) bg-transparent" },
+            
+            // Dark
+            { (Color.Dark, Variant.Filled), "text-white bg-gray-700 hover:bg-gray-800" },
+            { (Color.Dark, Variant.Outlined), "text-gray-700 border border-gray-700 hover:bg-gray-700 hover:text-white bg-transparent" },
+            { (Color.Dark, Variant.Text), "text-gray-700 bg-transparent" },
+            
+            // Light
+            { (Color.Light, Variant.Filled), "text-gray-900 bg-white"},
+            { (Color.Light, Variant.Outlined), "text-gray-700 border border-gray-700 hover:bg-gray-700 hover:text-white bg-transparent" },
+            { (Color.Light, Variant.Text), "text-gray-700 bg-transparent" },
+        };
+
+        return map.TryGetValue((Color, Variant), out var classString) ? classString : string.Empty;
+    }
+}
