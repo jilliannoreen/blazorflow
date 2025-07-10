@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.Components.Routing
+﻿@using BlazorFlow.Enums
+@using Microsoft.AspNetCore.Components.Routing
 
 <li class="mb-1">
     @if (ChildContent is not null)
@@ -7,13 +8,13 @@
             <div class="@NavItemContentClass">
                 @if (!string.IsNullOrWhiteSpace(Icon))
                 {
-                    <SvgIcon Icon="@Icon" Size="Size.Large" fill="none"/>
+                    <Icon SvgIcon="@Icon" Size="Size.Large" fill="none"/>
                 }
                 <span class="@NavItemVisibilityClass">@Label</span>
             </div>
             
             <span class="text-gray-600 transition-transform duration-200 @NavItemVisibilityClass @ArrowRotation">
-                <SvgIcon Icon="@Icons.ChevronRight" Size="Size.Large" fill="none"/>
+                <Icon SvgIcon="@Icons.ChevronRight" Size="Size.Large" fill="none"/>
             </span>
         </div>
 
@@ -32,7 +33,7 @@
                  ActiveClass="!text-gray-800 !bg-(--color-secondary)">
             @if (!string.IsNullOrWhiteSpace(Icon))
             {
-                <SvgIcon Icon="@Icon" Size="Size.Large" fill="none"/>
+                <Icon SvgIcon="@Icon" Size="Size.Large" fill="none"/>
             }
             <span class="@NavItemVisibilityClass">@Label</span>
         </NavLink>
