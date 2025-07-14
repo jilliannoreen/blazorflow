@@ -17,6 +17,7 @@
 		<RepositoryType>git</RepositoryType>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<StaticWebAssetBasePath>BlazorFlow</StaticWebAssetBasePath>
+		<EnableDefaultContentItems>false</EnableDefaultContentItems>
     </PropertyGroup>
 	
 <!-- 
