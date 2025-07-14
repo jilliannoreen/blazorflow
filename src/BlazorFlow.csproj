@@ -19,6 +19,9 @@
 		<StaticWebAssetBasePath>BlazorFlow</StaticWebAssetBasePath>
     </PropertyGroup>
 
+	<ItemGroup>
+		<Content Include="wwwroot\**" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="contentFiles\any\any\%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
 
     <ItemGroup>
         <SupportedPlatform Include="browser"/>
