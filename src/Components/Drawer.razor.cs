@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorFlow.Components;
 
-public partial class Drawer
+public partial class Drawer : ComponentBase
 {
     [Inject] private IDrawerService DrawerInterop { get; set; } 
     /// <summary>

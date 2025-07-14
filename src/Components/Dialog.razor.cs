@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorFlow.Components;
 
-public partial class Dialog 
+public partial class Dialog : ComponentBase
 {
     [Inject] private IDialogService DialogInterop { get; set; }
     

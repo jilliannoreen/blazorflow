@@ -20,14 +20,25 @@
 		<EnableDefaultContentItems>false</EnableDefaultContentItems>
     </PropertyGroup>
 
+	<!-- Make Razor files available to consumers for Tailwind scanning -->
 	<ItemGroup>
-		<Content Include="wwwroot/**/*" Pack="true" PackagePath="contentFiles\any\$(TargetFramework)\wwwroot" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="Components\**\*.razor"
+				 Pack="true"
+				 PackagePath="contentFiles\cs\any\BlazorFlow\Components\"
+				 CopyToOutputDirectory="Never"
+				 Visible="false" />
 	</ItemGroup>
 
+	<!-- Include static assets in wwwroot (css, js, fonts, etc.) -->
 	<ItemGroup>
-		<Content Include="Components\**\*.razor" Pack="true" PackagePath="contentFiles\cs\any\BlazorFlow\Components\" />
-		<Content Include="Components\**\*.razor.cs" Pack="true" PackagePath="contentFiles\cs\any\BlazorFlow\Components\" />
+		<Content Include="wwwroot\**\*"
+				 Pack="true"
+				 PackagePath="wwwroot"
+				 CopyToOutputDirectory="Never"
+				 Visible="false" />
 	</ItemGroup>
+
+
 	
     <ItemGroup>
         <SupportedPlatform Include="browser"/>

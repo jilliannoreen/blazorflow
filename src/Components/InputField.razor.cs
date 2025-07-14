@@ -1,12 +1,13 @@
 using System.Linq.Expressions;
 using BlazorFlow.Enums;
+using BlazorFlow.Services;
 using BlazorFlow.Utilities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 
 namespace BlazorFlow.Components;
 
-public partial class InputField
+public partial class InputField : ComponentBase
 {
      #region Parameters
 

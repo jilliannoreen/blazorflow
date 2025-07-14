@@ -1,4 +1,3 @@
-@using System.Linq.Expressions
 
 <div class="@InputWrapperClass">
     @if (VisualPlacement == Enums.VisualPlacement.Start)
@@ -14,7 +13,7 @@
            class="@InputClass" 
            disabled="@Disabled"
            readonly="@ReadOnly" 
-           @bind-value="@Value"
+           value="@Value"
            @oninput="HandleInput"
            aria-invalid="@ValidationMessages.Any()"/>
     

@@ -1,10 +1,12 @@
 using BlazorFlow.Enums;
+using BlazorFlow.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazorFlow.Components;
 
-public partial class DrawerProvider
+public partial class DrawerProvider : ComponentBase
 {
+    [Inject] IDrawerService DrawerService { get; set; } = null!;
     private string? Title { get; set; }
     private RenderFragment? Body { get; set; }
     private DrawerPosition DrawerPosition { get; set; } = DrawerPosition.Right;
