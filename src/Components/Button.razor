@@ -10,7 +10,7 @@
 
     @if (ChildContent is not null)
     {
-        <span class="text-center w-full">@ChildContent</span>
+        @ChildContent
     }
 
     @if (!string.IsNullOrWhiteSpace(Icon) && VisualPlacement == Enums.VisualPlacement.End)

@@ -302,14 +302,14 @@ public partial class InputField
     /// </summary>
     private string GetFocusColorClass() => Color switch
     {
-        Color.Primary => "focus:border-[var(--color-primary)]",
-        Color.Secondary => "focus:border-[var(--color-secondary)]",
-        Color.Tertiary => "focus:border-[var(--color-tertiary)] ",
-        Color.Success => "focus:border-[var(--color-success)]",
-        Color.Warning => "focus:border-[var(--color-warning)]",
-        Color.Info => "focus:border-[var(--color-info)]",
-        Color.Error => "focus:border-[var(--color-error)]",
-        _ => "focus:border-[var(--color-gray)]"
+        Color.Primary => "focus:border-(--primary)",
+        Color.Secondary => "focus:border-(--secondary)",
+        Color.Tertiary => "focus:border-(--tertiary) ",
+        Color.Success => "focus:border-(--success)",
+        Color.Warning => "focus:border-(--warning)",
+        Color.Info => "focus:border-(--info)",
+        Color.Error => "focus:border-(--error)",
+        _ => "focus:border-(--primary)"
     };
     
     /// <summary>
@@ -377,19 +377,17 @@ public partial class InputField
 
         var colorVar = Color switch
         {
-            Color.Primary => "var(--color-primary)",
-            Color.Secondary => "var(--color-secondary)",
-            Color.Tertiary => "var(--color-tertiary)",
-            Color.Success => "var(--color-success)",
-            Color.Warning => "var(--color-warning)",
-            Color.Info => "var(--color-info)",
-            Color.Error => "var(--color-error)",
-            _ => "var(--color-gray)"
+            Color.Primary => "--primary",
+            Color.Secondary => "--secondary",
+            Color.Tertiary => "--tertiary",
+            Color.Success => "--success",
+            Color.Warning => "--warning",
+            Color.Info => "--info",
+            Color.Error => "--error",
+            _ => "--primary"
         };
 
-        return $"peer-focus:text-[{colorVar}]";
+        return $"peer-focus:text-({colorVar})";
     }
-
-
     #endregion
 }

@@ -24,7 +24,7 @@ public partial class Button
     [Parameter] public Color Color { get; set; } = Color.Primary;
     
     private string ButtonClass => ClassBuilder
-        .Default("inline-flex items-center align-middle gap-1 font-medium leading-none text-center rounded-lg focus:ring-2 focus:outline-none cursor-pointer")
+        .Default("inline-flex justify-center items-center align-middle gap-1 font-medium leading-none text-center rounded-lg focus:outline-none cursor-pointer")
         .AddClass(GetSizeClass())
         .AddClass(GetVariantColorClass())  
         .AddClass("fixed bottom-6 right-6 rounded-full shadow-lg z-50", IsFloating)
@@ -44,13 +44,27 @@ public partial class Button
 
     private string GetSizeClass()
     {
+        if (ChildContent == null && VisualPlacement != VisualPlacement.None)
+        {
+            return Size switch
+            {
+                ButtonSize.ExtraSmall => "p-2 text-xs min-h-[32px]",
+                ButtonSize.Small => "p-2 text-sm min-h-[36px]",
+                ButtonSize.Base => "p-2.5 text-sm min-h-[40px]",
+                ButtonSize.Large => "p-3 text-base min-h-[44px]",
+                ButtonSize.ExtraLarge => "p-3.5 text-base min-h-[48px]",
+                _ => "p-2.5 text-sm min-h-[40px]"
+            };
+        }
+        
         return Size switch
         {
-            ButtonSize.ExtraSmall => "px-3 py-2 text-xs",
-            ButtonSize.Small => "px-3 py-2 text-sm",
-            ButtonSize.Large => "px-5 py-3 text-base",
-            ButtonSize.ExtraLarge => "px-6 py-3.5 text-base",
-            _ => "px-5 py-2.5 text-sm"
+            ButtonSize.ExtraSmall => "px-3 py-2 text-xs min-h-[32px]",
+            ButtonSize.Small => "px-3 py-2 text-sm min-h-[36px]",
+            ButtonSize.Base => "px-5 py-2.5 text-sm min-h-[40px]",
+            ButtonSize.Large => "px-5 py-3 text-base min-h-[44px]",
+            ButtonSize.ExtraLarge => "px-6 py-3.5 text-base min-h-[48px]",
+            _ => "px-5 py-2.5 text-sm min-h-[40px]"
         };
     }
     

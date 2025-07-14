@@ -4,22 +4,42 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-
-	<!-- NuGet package metadata -->
-  	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-  	<PackageId>BlazorFlow</PackageId>
-  	<Authors>Jillian Noreen</Authors>
-  	<Company>Jillian Noreen</Company>
-  	<Product>BlazorFlow</Product>
-  	<Description>Flowbite + Tailwind CSS Blazor component library.</Description>
-  	<PackageTags>blazor tailwind flowbite components ui</PackageTags>
-  	<RepositoryUrl>https://github.com/jilliannoreen/BlazorFlow</RepositoryUrl>
-  	<PackageProjectUrl>https://github.com/jilliannoreen/BlazorFlow</PackageProjectUrl>
-	<RepositoryType>git</RepositoryType>
-  	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<!-- NuGet package metadata -->
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>BlazorFlow</PackageId>
+		<Authors>Jillian Noreen</Authors>
+		<Company>Jillian Noreen</Company>
+		<Product>BlazorFlow</Product>
+		<Description>Flowbite + Tailwind CSS Blazor component library.</Description>
+		<PackageTags>blazor tailwind flowbite components ui</PackageTags>
+		<RepositoryUrl>https://github.com/jilliannoreen/BlazorFlow</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/jilliannoreen/BlazorFlow</PackageProjectUrl>
+		<RepositoryType>git</RepositoryType>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<StaticWebAssetBasePath>BlazorFlow</StaticWebAssetBasePath>
     </PropertyGroup>
+	
+<!-- 
+	UNCOMMENT THIS WHEN BUILDING THE NUGET PACKAGE
+	<ItemGroup>
+		<Content Include="wwwroot/**/*" Pack="true" PackagePath="contentFiles\any\$(TargetFramework)\wwwroot" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
 
+	<ItemGroup>
+		<Content Include="Components\**\*.razor" Pack="true" PackagePath="contentFiles\cs\any\BlazorFlow\Components\" />
+		<Content Include="Components\**\*.razor.cs" Pack="true" PackagePath="contentFiles\cs\any\BlazorFlow\Components\" />
+	</ItemGroup>
+-->
 
+	<ItemGroup>
+		<Content Include="wwwroot/**/*" Pack="true" PackagePath="contentFiles\any\$(TargetFramework)\wwwroot" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Components\**\*.razor" Pack="true" PackagePath="contentFiles\cs\any\BlazorFlow\Components\" />
+		<Content Include="Components\**\*.razor.cs" Pack="true" PackagePath="contentFiles\cs\any\BlazorFlow\Components\" />
+	</ItemGroup>
+	
     <ItemGroup>
         <SupportedPlatform Include="browser"/>
     </ItemGroup>
