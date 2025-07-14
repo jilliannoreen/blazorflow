@@ -19,18 +19,6 @@
 		<StaticWebAssetBasePath>BlazorFlow</StaticWebAssetBasePath>
 		<EnableDefaultContentItems>false</EnableDefaultContentItems>
     </PropertyGroup>
-	
-<!-- 
-	UNCOMMENT THIS WHEN BUILDING THE NUGET PACKAGE
-	<ItemGroup>
-		<Content Include="wwwroot/**/*" Pack="true" PackagePath="contentFiles\any\$(TargetFramework)\wwwroot" CopyToOutputDirectory="PreserveNewest" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Include="Components\**\*.razor" Pack="true" PackagePath="contentFiles\cs\any\BlazorFlow\Components\" />
-		<Content Include="Components\**\*.razor.cs" Pack="true" PackagePath="contentFiles\cs\any\BlazorFlow\Components\" />
-	</ItemGroup>
--->
 
 	<ItemGroup>
 		<Content Include="wwwroot/**/*" Pack="true" PackagePath="contentFiles\any\$(TargetFramework)\wwwroot" CopyToOutputDirectory="PreserveNewest" />
