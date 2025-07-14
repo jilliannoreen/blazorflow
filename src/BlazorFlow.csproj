@@ -17,12 +17,8 @@
 		<RepositoryType>git</RepositoryType>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<StaticWebAssetBasePath>BlazorFlow</StaticWebAssetBasePath>
-		<EnableDefaultContentItems>false</EnableDefaultContentItems>
     </PropertyGroup>
 
-	<ItemGroup>
-		<Content Include="wwwroot/**/*" Pack="true" PackagePath="contentFiles\any\$(TargetFramework)\wwwroot" CopyToOutputDirectory="PreserveNewest" />
-	</ItemGroup>
 
     <ItemGroup>
         <SupportedPlatform Include="browser"/>
