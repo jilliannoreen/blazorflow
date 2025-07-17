@@ -1,3 +1,22 @@
+<style>
+    /* Autofill fix: adjust label position when input is autofilled */
+    /* Small outlined/text input autofill adjustment */
+    input.sm-input:-webkit-autofill + label {
+        transform: translateY(-22px);
+
+    }
+    /* Small filled input autofill adjustment */
+    input.sm-input-filled:-webkit-autofill + label {
+        transform: translateY(-1rem);
+    }
+    /* Medium and large inputs (outlined, text, filled) autofill adjustment */
+    input.md-input:-webkit-autofill + label,
+    input.lg-input:-webkit-autofill + label,
+    input.md-input-filled:-webkit-autofill + label,
+    input.lg-input-filled:-webkit-autofill + label {
+        transform: translateY(-1.25rem);
+    }
+</style>
 
 <div class="@InputWrapperClass">
     @if (VisualPlacement == Enums.VisualPlacement.Start)
@@ -15,6 +34,7 @@
            readonly="@ReadOnly" 
            value="@Value"
            @oninput="HandleInput"
+           @onchange="HandleChange"
            aria-invalid="@ValidationMessages.Any()"/>
     
     

@@ -30,28 +30,28 @@ public class DrawerService : IDrawerService
     /// <inheritdoc />
     public async Task InitAsync(string id, Drawer.DrawerOptions options)
     {
-        await _js.InvokeVoidAsync("drawerInterop.init", id, options);
+        await _js.InvokeVoidAsync("flowbiteBlazorInterop.drawer.init", id, options);
     }
     
     /// <inheritdoc />
     public async Task ShowAsync(string id)
     {
-        await _js.InvokeVoidAsync("drawerInterop.showDrawer", id);
+        await _js.InvokeVoidAsync("flowbiteBlazorInterop.drawer.show", id);
     }
     /// <inheritdoc />
     public async Task HideAsync(string id)
     {
-        await _js.InvokeVoidAsync("drawerInterop.hideDrawer", id);
+        await _js.InvokeVoidAsync("flowbiteBlazorInterop.drawer.hide", id);
     }
     /// <inheritdoc />
     public async Task ToggleAsync(string id)
     {
-        await _js.InvokeVoidAsync("drawerInterop.toggleDrawer", id);
+        await _js.InvokeVoidAsync("flowbiteBlazorInterop.drawer.toggle", id);
     }
     /// <inheritdoc />
     public async Task<bool> IsVisibleAsync(string id)
     {
-        return await _js.InvokeAsync<bool>("drawerInterop.isDrawerVisible", id);
+        return await _js.InvokeAsync<bool>("flowbiteBlazorInterop.drawer.isVisible", id);
     }
     /// <inheritdoc/>
     public Task ShowAsync<TComponent>(string title, DrawerParameters<TComponent> parameters, Drawer.DrawerOptions? options = null)

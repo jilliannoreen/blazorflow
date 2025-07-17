@@ -1,10 +1,11 @@
 using BlazorFlow.Enums;
 using BlazorFlow.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace BlazorFlow.Components;
 
-public partial class Dialog : ComponentBase
+public partial class Dialog : ComponentBase, IAsyncDisposable 
 {
     [Inject] private IDialogService DialogInterop { get; set; }
     
@@ -19,6 +20,15 @@ public partial class Dialog : ComponentBase
     /// </summary>
     [Parameter] public string Title { get; set; } = string.Empty;
     [Parameter] public DialogSize Size { get; set; } = DialogSize.Default;
+    [Parameter] public EventCallback OnShowCallback { get; set; }
+    [Parameter] public EventCallback OnHideCallback { get; set; }
+    [Parameter] public EventCallback OnToggleCallback { get; set; }
+    [JSInvokable] public Task OnShow() => OnShowCallback.InvokeAsync();
+    [JSInvokable] public Task OnHide() => OnHideCallback.InvokeAsync();
+    [JSInvokable] public Task OnToggle() => OnToggleCallback.InvokeAsync();
+
+    
+    private DotNetObjectReference<Dialog>? _dotNetRef;
 
     
     
@@ -29,6 +39,7 @@ public partial class Dialog : ComponentBase
     {
         if (firstRender)
         {
+            _dotNetRef = DotNetObjectReference.Create(this);
             await ReInitAsync();
         }
     }
@@ -54,7 +65,7 @@ public partial class Dialog : ComponentBase
             },
         };
 
-        await DialogInterop.InitAsync(Id, options);
+        await DialogInterop.InitAsync(Id, options, _dotNetRef);
     }
 
     /// <summary>
@@ -86,6 +97,12 @@ public partial class Dialog : ComponentBase
             DialogSize.ExtraLarge => "max-w-5xl",
             _ => "max-w-lg"
         };
+    }
+    
+    public ValueTask DisposeAsync()
+    {
+        _dotNetRef?.Dispose();
+        return ValueTask.CompletedTask;
     }
     
     

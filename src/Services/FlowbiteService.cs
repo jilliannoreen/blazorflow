@@ -18,6 +18,6 @@ public class FlowbiteService : IFlowbiteService
 
     public async ValueTask InitializeFlowbiteAsync()
     {
-        await _jsRuntime.InvokeVoidAsync("flowbiteInterop.initializeFlowbite");
+        await _jsRuntime.InvokeVoidAsync("flowbiteBlazorInterop.core.initialize");
     }
 }

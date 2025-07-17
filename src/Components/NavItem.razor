@@ -1,5 +1,4 @@
-﻿@using BlazorFlow.Constants
-@using BlazorFlow.Enums
+﻿@using BlazorFlow.Icons
 @using Microsoft.AspNetCore.Components.Routing
 
 <li class="mb-1">
@@ -15,7 +14,7 @@
             </div>
             
             <span class="text-gray-600 transition-transform duration-200 @NavItemVisibilityClass @ArrowRotation">
-                <Icon SvgIcon="@Icons.ChevronRight" Size="Size.Large" fill="none"/>
+                <Icon SvgIcon="@Icons.Outlined.ChevronRight" Size="Size.Large" fill="none"/>
             </span>
         </div>
 
@@ -31,7 +30,7 @@
         <NavLink class="@NavItemClass"
                  href="@Href"
                  Match="@Match"
-                 ActiveClass="!text-gray-800 !bg-(--color-secondary)">
+                 ActiveClass="!text-gray-800 !bg-(--secondary)">
             @if (!string.IsNullOrWhiteSpace(Icon))
             {
                 <Icon SvgIcon="@Icon" Size="Size.Large" fill="none"/>

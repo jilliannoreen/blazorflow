@@ -1,0 +1,28 @@
+@using BlazorFlow.Icons
+<div id="@Id" class="@ToastClass" role="alert">
+    @if (!string.IsNullOrWhiteSpace(Icon))
+    {
+        <div class="@IconClass">
+            <Icon SvgIcon="@Icon"></Icon>
+        </div>
+    }
+    
+    <div class="flex flex-col ms-3">
+        <div class="text-base font-semibold">@((MarkupString)Title)</div>
+        @if (!string.IsNullOrWhiteSpace(Subtitle))
+        {
+            <p class="text-base">@Subtitle</p>
+        }
+    </div>
+
+    @if (Dismissible)
+    {
+        <Button Type="ButtonType.Button"
+                Icon="@Icons.Outlined.CrossCircle"
+                VisualPlacement="VisualPlacement.Start"
+                Variant="Variant.Text"
+                Class="ms-auto text-gray-400 hover:text-gray-600"
+                Size="ButtonSize.Small">
+        </Button>
+    }
+</div>

@@ -1,5 +1,6 @@
 using BlazorFlow.Components;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace BlazorFlow.Services;
 
@@ -20,7 +21,7 @@ public interface IDialogService
     /// <param name="id"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    Task InitAsync(string id, Dialog.DialogOptions options);
+    Task InitAsync(string id, Dialog.DialogOptions options, DotNetObjectReference<Dialog> dotNetRef);
     /// <summary>
     /// Shows the drawer with the specified ID.
     /// </summary>

@@ -66,7 +66,7 @@ public partial class Drawer : ComponentBase
         {
             DrawerPosition.Left or DrawerPosition.Right => Size switch
             {
-                DrawerSize.Half => "w-1/2",
+                DrawerSize.Half => "w-full md:w-1/2",
                 DrawerSize.Small => "w-full sm:w-sm",
                 DrawerSize.Medium => "w-full sm:w-md",
                 DrawerSize.Large => "w-full sm:w-lg",

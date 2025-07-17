@@ -184,6 +184,13 @@ public partial class InputField : ComponentBase
             await SetValueAsync(newValue);
         }
     }
+    
+    private async Task HandleChange(ChangeEventArgs e)
+    {
+        var newValue = e.Value?.ToString() ?? string.Empty;
+        if (!Immediate) await SetValueAsync(newValue);
+        
+    }
 
     /// <summary>
     /// Updates internal state, triggers binding, and notifies EditContext.
@@ -283,15 +290,18 @@ public partial class InputField : ComponentBase
         // Base label float positions based on variant and size
         return (Variant, Size) switch
         {
-            // Filled & Text
-            (Variant.Filled, Size.Small) => "top-[16px] -translate-y-4 peer-focus:-translate-y-4",
-            (Variant.Filled, Size.Medium) => "top-[20px] -translate-y-5 peer-focus:-translate-y-5",
-            (Variant.Filled, Size.Large) => "top-[24px] -translate-y-5 peer-focus:-translate-y-5",
+            // Filled
+            // (Variant.Outlined, Size.Small) or (Variant.Text, Size.Small) => "top-[14px] -translate-y-[22px]  peer-focus:-translate-y-[22px]",
+            // (Variant.Outlined, Size.Medium) or (Variant.Text, Size.Medium) => "top-[16px] -translate-y-6 peer-focus:-translate-y-6",
+            // (Variant.Outlined, Size.Large) or (Variant.Text, Size.Large) => "top-[20px] -translate-y-7 peer-focus:-translate-y-7",
+            (Variant.Filled, Size.Small) => "sm-input-filled top-[12px] -translate-y-3 peer-focus:-translate-y-3",
+            (Variant.Filled, Size.Medium) => "md-input-filled top-[14px] -translate-y-3 peer-focus:-translate-y-3",
+            (Variant.Filled, Size.Large) => "lg-input-filled top-[18px] -translate-y-4 peer-focus:-translate-y-4",
 
             // Outlined floats a bit higher
-            (Variant.Outlined, Size.Small) or (Variant.Text, Size.Small) => "top-[14px] -translate-y-[22px]  peer-focus:-translate-y-[22px]",
-            (Variant.Outlined, Size.Medium) or (Variant.Text, Size.Medium) => "top-[16px] -translate-y-6 peer-focus:-translate-y-6",
-            (Variant.Outlined, Size.Large) or (Variant.Text, Size.Large) => "top-[20px] -translate-y-7 peer-focus:-translate-y-7",
+            (Variant.Outlined, Size.Small) or (Variant.Text, Size.Small) => "sm-input top-[14px] -translate-y-[22px]  peer-focus:-translate-y-[22px]",
+            (Variant.Outlined, Size.Medium) or (Variant.Text, Size.Medium) => "md-input top-[16px] -translate-y-6 peer-focus:-translate-y-6",
+            (Variant.Outlined, Size.Large) or (Variant.Text, Size.Large) => "lg-input top-[20px] -translate-y-7 peer-focus:-translate-y-7",
 
             // Fallback
             _ => "top-[12px] -translate-y-4 peer-focus:-translate-y-4"
@@ -326,7 +336,11 @@ public partial class InputField : ComponentBase
 
         return Variant switch
         {
-            Variant.Filled or Variant.Text => hasError
+            Variant.Filled => hasError
+                ? "border-red-600 focus:border-red-600"
+                : $"border-0",
+            
+            Variant.Text => hasError
                 ? "border-0 border-b-2 border-red-600 focus:border-red-600"
                 : $"border-0 border-b-2 border-gray-300 {colorClass}",
 
@@ -348,9 +362,12 @@ public partial class InputField : ComponentBase
         var map = new Dictionary<(Size, Variant), string>
         {
             // Filled
-            { (Size.Small, Variant.Filled), "px-4 pb-1.5 pt-4 text-sm rounded-t-lg bg-gray-200" },
-            { (Size.Medium, Variant.Filled), "px-4 pb-1.5 pt-5 text-sm rounded-t-xl bg-gray-200" },
-            { (Size.Large, Variant.Filled), "px-4 pb-2 pt-5 text-base rounded-t-xl bg-gray-200" },
+            // { (Size.Small, Variant.Filled), "px-4 pb-1.5 pt-4 text-sm rounded-t-lg bg-gray-200" },
+            // { (Size.Medium, Variant.Filled), "px-4 pb-1.5 pt-5 text-sm rounded-t-xl bg-gray-200" },
+            // { (Size.Large, Variant.Filled), "px-4 pb-2 pt-5 text-base rounded-t-xl bg-gray-200" },
+            { (Size.Small, Variant.Filled), "px-4 pb-1.5 pt-4 text-sm rounded-lg bg-gray-100" },
+            { (Size.Medium, Variant.Filled), "px-4 pb-1.5 pt-5 text-sm rounded-xl bg-gray-100" },
+            { (Size.Large, Variant.Filled), "px-4 pb-2 pt-5 text-base rounded-xl bg-gray-100" },
 
             // Outlined
             { (Size.Small, Variant.Outlined), "px-4 py-3 text-sm rounded-lg bg-transparent" },
