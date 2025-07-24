@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Components.Forms;
 
 namespace BlazorFlow.Components;
 
-public partial class InputField : ComponentBase
+public partial class InputField : ComponentBase, IDisposable
 {
     #region Parameters
 
@@ -187,7 +187,7 @@ public partial class InputField : ComponentBase
     /// <summary>
     /// Detaches event handlers from EditContext.
     /// </summary>
-    private void Dispose()
+    public void Dispose()
     {
         if (EditContext != null)
         {
@@ -260,9 +260,13 @@ public partial class InputField : ComponentBase
         if (EditContext == null) return;
 
         var fieldIdentifier = FieldIdentifier.Create(ValueExpression);
-        ValidationMessages = EditContext.GetValidationMessages(fieldIdentifier).ToList();
+        var newMessages = EditContext.GetValidationMessages(fieldIdentifier).ToList();
 
-        StateHasChanged();
+        if (!ValidationMessages.SequenceEqual(newMessages))
+        {
+            ValidationMessages = newMessages;
+            StateHasChanged();
+        }
     }
 
     #endregion
