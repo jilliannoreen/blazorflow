@@ -1,28 +1,55 @@
 @using BlazorFlow.Icons
-<div id="@Id" class="@ToastClass" role="alert">
-    @if (!string.IsNullOrWhiteSpace(Icon))
-    {
-        <div class="@IconClass">
-            <Icon SvgIcon="@Icon"></Icon>
-        </div>
+
+<style>
+    .toast-fade-in {
+        animation: fadeIn 0.3s ease-out forwards;
     }
-    
-    <div class="flex flex-col ms-3">
-        <div class="text-base font-semibold">@((MarkupString)Title)</div>
-        @if (!string.IsNullOrWhiteSpace(Subtitle))
+
+    .toast-fade-out {
+        animation: fadeOut 0.3s ease-in forwards;
+    }
+
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @@keyframes fadeOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(-10px); }
+    }
+</style>
+
+<div class="@ToastClass flex items-start justify-between gap-4 p-4 rounded shadow-md" role="alert">
+
+    <!-- Left Section: Icon + Text -->
+    <div class="flex items-start gap-3 flex-1">
+        @if (!string.IsNullOrWhiteSpace(Icon))
         {
-            <p class="text-base">@Subtitle</p>
+            <div class="@IconClass shrink-0">
+                <Icon SvgIcon="@Icon"></Icon>
+            </div>
         }
+
+        <div class="flex flex-col">
+            <div class="text-base font-semibold leading-snug">@((MarkupString)Title)</div>
+            @if (!string.IsNullOrWhiteSpace(Subtitle))
+            {
+                <p class="text-sm text-gray-600 leading-snug">@Subtitle</p>
+            }
+        </div>
     </div>
 
+    <!-- Right Section: Dismiss Button -->
     @if (Dismissible)
     {
         <Button Type="ButtonType.Button"
                 Icon="@Icons.Outlined.CrossCircle"
                 VisualPlacement="VisualPlacement.Start"
                 Variant="Variant.Text"
-                Class="ms-auto text-gray-400 hover:text-gray-600"
-                Size="ButtonSize.Small">
+                Class="text-gray-400 hover:text-gray-600"
+                Size="ButtonSize.Small"
+                OnClick="@(async () => await OnClose.InvokeAsync())">
         </Button>
     }
 </div>

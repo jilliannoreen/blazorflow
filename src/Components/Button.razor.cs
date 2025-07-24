@@ -5,58 +5,65 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorFlow.Components;
 
+/// <summary>
+/// A customizable button component with support for variants, colors, icons, loading state, and sizing.
+/// </summary>
 public partial class Button
 {
+    // Button behavior and style parameters
     [Parameter] public ButtonType Type { get; set; } = ButtonType.Button;
     [Parameter] public ButtonSize Size { get; set; } = ButtonSize.Base;
     [Parameter] public string? Class { get; set; }
     [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public bool FullWidth { get; set; } = false;
+    [Parameter] public bool FullRounded { get; set; } = false;
+    [Parameter] public Variant Variant { get; set; } = Variant.Filled;
+    [Parameter] public Color Color { get; set; } = Color.Primary;
+
+    // Icon and layout
     [Parameter] public string? Icon { get; set; }
     [Parameter] public Size IconSize { get; set; } = Enums.Size.Medium;
     [Parameter] public VisualPlacement VisualPlacement { get; set; } = VisualPlacement.None;
+
+    // Content and loading
     [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public bool IsFloating { get; set; } = false;
-    [Parameter] public bool FullWidth { get; set; } = false;
-    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+    [Parameter] public bool IsLoading { get; set; } = false;
+    [Parameter] public string? LoadingText { get; set; }
+
+    // Event handling
     [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
-    [Parameter] public bool FullRounded { get; set; }
-    [Parameter] public Variant Variant { get; set; } = Variant.Filled;
-    [Parameter] public Color Color { get; set; } = Color.Primary;
-    
+
+    // Pass any unmatched HTML attributes to the button
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>
+    /// Composes the final CSS class list for the button element.
+    /// </summary>
     private string ButtonClass => ClassBuilder
-        .Default("inline-flex justify-center items-center align-middle gap-1 font-medium leading-none text-center rounded-lg focus:outline-none cursor-pointer")
+        .Default("inline-flex justify-center items-center align-middle gap-1 font-medium leading-none text-center rounded-lg focus:outline-none")
         .AddClass(GetSizeClass())
-        .AddClass(GetVariantColorClass())  
-        .AddClass("fixed bottom-6 right-6 rounded-full shadow-lg z-50", IsFloating)
-        .AddClass("opacity-50 cursor-not-allowed", Disabled)
+        .AddClass(Disabled ? "cursor-not-allowed text-white bg-gray-300" : $"cursor-pointer {GetVariantColorClass()}")
         .AddClass("w-full", FullWidth)
         .AddClass("rounded-full!", FullRounded)
         .AddClass(Class)
         .Build();
-    
+
+    /// <summary>
+    /// Handles click events only if the button is not disabled.
+    /// </summary>
     private async Task HandleClick(MouseEventArgs e)
     {
-        if (!Disabled)
+        if (OnClick.HasDelegate && !Disabled)
         {
             await OnClick.InvokeAsync(e);
         }
     }
 
+    /// <summary>
+    /// Returns the appropriate size-related CSS classes.
+    /// </summary>
     private string GetSizeClass()
     {
-        if (ChildContent == null && VisualPlacement != VisualPlacement.None)
-        {
-            return Size switch
-            {
-                ButtonSize.ExtraSmall => "p-2 text-xs min-h-[32px]",
-                ButtonSize.Small => "p-2 text-sm min-h-[36px]",
-                ButtonSize.Base => "p-2.5 text-sm min-h-[40px]",
-                ButtonSize.Large => "p-3 text-base min-h-[44px]",
-                ButtonSize.ExtraLarge => "p-3.5 text-base min-h-[48px]",
-                _ => "p-2.5 text-sm min-h-[40px]"
-            };
-        }
-        
         return Size switch
         {
             ButtonSize.ExtraSmall => "px-3 py-2 text-xs min-h-[32px]",
@@ -67,7 +74,24 @@ public partial class Button
             _ => "px-5 py-2.5 text-sm min-h-[40px]"
         };
     }
-    
+
+    /// <summary>
+    /// Returns the appropriate loading spinner size classes.
+    /// </summary>
+    private string GetLoadingClass() => ClassBuilder
+        .Default("inline w-4 h-4 me-3 text-white animate-spin")
+        .AddClass(Size switch
+        {
+            ButtonSize.ExtraSmall or ButtonSize.Small => "size-4.5",
+            ButtonSize.Large or ButtonSize.ExtraLarge => "size-6",
+            _ => "size-5",
+        })
+        .AddClass(Class)
+        .Build();
+
+    /// <summary>
+    /// Returns the Tailwind-based color + variant class string.
+    /// </summary>
     private string GetVariantColorClass()
     {
         var map = new Dictionary<(Color, Variant), string>

@@ -9,7 +9,7 @@ namespace BlazorFlow.Components;
 
 public partial class InputField : ComponentBase
 {
-     #region Parameters
+    #region Parameters
 
     /// <summary>
     /// Specifies the input type (text, password, email, etc.).
@@ -44,12 +44,16 @@ public partial class InputField : ComponentBase
     /// <summary>
     /// Optional SVG icon markup.
     /// </summary>
-    [Parameter] public string? IconHtml { get; set; }
+    [Parameter] public string? Icon { get; set; }
 
     /// <summary>
     /// Optional class applied to the icon container.
     /// </summary>
     [Parameter] public string? IconClass { get; set; }
+    /// <summary>
+    /// Size of Icon
+    /// </summary>
+    [Parameter] public Size IconSize { get; set; } = Enums.Size.Medium;
 
     /// <summary>
     /// The visual variant of the input (Filled, Outlined, Text).
@@ -84,7 +88,7 @@ public partial class InputField : ComponentBase
     /// <summary>
     /// The input's bound value.
     /// </summary>
-    [Parameter] public string? Value { get => value; set => this.value = value; }
+    [Parameter] public string? Value { get => _value; set => this._value = value; }
 
     /// <summary>
     /// Callback invoked when the value is changed (used for two-way binding).
@@ -112,7 +116,16 @@ public partial class InputField : ComponentBase
     /// Defaults to <c>Color.Primary</c>.
     /// </summary>
     [Parameter] public Color Color { get; set; } = Color.Primary;
-
+    
+    /// <summary>
+    /// Gets or sets the custom error message to display below the input field.
+    /// If set, this overrides any built-in validation messages.
+    /// </summary>
+    [Parameter] public string? ErrorText { get; set; }
+    /// <summary>
+    /// Add autocomplete control
+    /// </summary>
+    [Parameter] public bool AutoComplete { get; set; } = false;
 
     #endregion
 
@@ -121,12 +134,12 @@ public partial class InputField : ComponentBase
     /// <summary>
     /// Internal backing field for the bound value.
     /// </summary>
-    private string? value;
+    private string? _value;
 
     /// <summary>
     /// The original value used for dirty-checking or future use.
     /// </summary>
-    private string? originalValue;
+    private string? _originalValue;
 
     /// <summary>
     /// Holds the current validation messages from the EditContext.
@@ -137,6 +150,20 @@ public partial class InputField : ComponentBase
     /// The unique identifier for the input element.
     /// </summary>
     private string Id { get; } = $"input-{Guid.NewGuid()}";
+    /// <summary>
+    /// Determines whether the input field should display an error state.
+    /// Returns <c>true</c> if a custom error message is provided via <see cref="ErrorText"/>
+    /// or if any validation messages are present from the form context.
+    /// </summary>
+    private bool HasError => !string.IsNullOrEmpty(ErrorText) || ValidationMessages.Any();
+
+    /// <summary>
+    /// Dynamically sets aria-describedby to match visible helper or error text
+    /// </summary>
+    private string? AriaDescribedById =>
+        HasError ? $"{Id}-error"
+        : !string.IsNullOrWhiteSpace(HelperText) ? $"{Id}-helper-text"
+        : null;
 
     #endregion
 
@@ -153,7 +180,7 @@ public partial class InputField : ComponentBase
             EditContext.OnValidationStateChanged += HandleValidationStateChanged;
         }
 
-        originalValue = Value;
+        _originalValue = Value;
         base.OnInitialized();
     }
 
@@ -197,9 +224,9 @@ public partial class InputField : ComponentBase
     /// </summary>
     private async Task SetValueAsync(string newValue)
     {
-        if (value != newValue)
+        if (_value != newValue)
         {
-            value = newValue;
+            _value = newValue;
 
             if (ValueChanged.HasDelegate)
                 await ValueChanged.InvokeAsync(newValue);
@@ -269,7 +296,10 @@ public partial class InputField : ComponentBase
         .AddClass(GetBorderClassByVariant()) // ⬅ handles border logic
         .AddClass("opacity-50 cursor-not-allowed bg-gray-100 text-gray-500", Disabled)
         .AddClass("bg-gray-100 text-gray-500 cursor-default", ReadOnly && !Disabled && !ValidationMessages.Any())
-        .AddClass(GetClassByVariantSize()) // ⬅ handles padding/bg/font
+        .AddClass(GetClassByVariantSize(
+            hasStartIcon: VisualPlacement == VisualPlacement.Start, 
+            hasEndIcon: VisualPlacement == VisualPlacement.End, 
+            hasLabel: !string.IsNullOrWhiteSpace(Label))) // ⬅ handles padding/bg/font
         .Build();
 
 
@@ -277,7 +307,7 @@ public partial class InputField : ComponentBase
     /// Builds the label class with floating animation support.
     /// </summary>
     private string LabelClass => ClassBuilder
-        .Default("absolute left-[16px] text-sm text-gray-600 transition-all z-10 origin-[0] scale-75 cursor-text")
+        .Default("absolute left-[16px] text-sm text-gray-600 transition-all z-10 origin-[0] scale-75 cursor-text px-1.5")
         .AddClass("bg-white", Variant == Variant.Outlined)
         .AddClass(GetLabelPositionClass()) // dynamically set label top offset
         .AddClass("peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0") // if empty, reset
@@ -291,12 +321,9 @@ public partial class InputField : ComponentBase
         return (Variant, Size) switch
         {
             // Filled
-            // (Variant.Outlined, Size.Small) or (Variant.Text, Size.Small) => "top-[14px] -translate-y-[22px]  peer-focus:-translate-y-[22px]",
-            // (Variant.Outlined, Size.Medium) or (Variant.Text, Size.Medium) => "top-[16px] -translate-y-6 peer-focus:-translate-y-6",
-            // (Variant.Outlined, Size.Large) or (Variant.Text, Size.Large) => "top-[20px] -translate-y-7 peer-focus:-translate-y-7",
-            (Variant.Filled, Size.Small) => "sm-input-filled top-[12px] -translate-y-3 peer-focus:-translate-y-3",
-            (Variant.Filled, Size.Medium) => "md-input-filled top-[14px] -translate-y-3 peer-focus:-translate-y-3",
-            (Variant.Filled, Size.Large) => "lg-input-filled top-[18px] -translate-y-4 peer-focus:-translate-y-4",
+            (Variant.Filled, Size.Small) => "sm-input-filled top-[14px] -translate-y-3 peer-focus:-translate-y-3",
+            (Variant.Filled, Size.Medium) => "md-input-filled top-[16px] -translate-y-3 peer-focus:-translate-y-3",
+            (Variant.Filled, Size.Large) => "lg-input-filled top-[20px] -translate-y-4 peer-focus:-translate-y-4",
 
             // Outlined floats a bit higher
             (Variant.Outlined, Size.Small) or (Variant.Text, Size.Small) => "sm-input top-[14px] -translate-y-[22px]  peer-focus:-translate-y-[22px]",
@@ -331,24 +358,64 @@ public partial class InputField : ComponentBase
     /// <returns>Tailwind utility class string representing border and focus styling.</returns>
     private string GetBorderClassByVariant()
     {
-        var hasError = ValidationMessages.Any();
         var colorClass = GetFocusColorClass();
 
         return Variant switch
         {
-            Variant.Filled => hasError
+            Variant.Filled => HasError
                 ? "border-red-600 focus:border-red-600"
                 : $"border-0",
             
-            Variant.Text => hasError
+            Variant.Text => HasError
                 ? "border-0 border-b-2 border-red-600 focus:border-red-600"
                 : $"border-0 border-b-2 border-gray-300 {colorClass}",
 
-            Variant.Outlined => hasError
+            Variant.Outlined => HasError
                 ? "border border-red-600 focus:border-red-600"
                 : $"border border-gray-300 {colorClass}",
 
             _ => string.Empty
+        };
+    }
+
+    /// <summary>
+    /// Returns the background class based on the <see cref="Variant"/>.
+    /// </summary>
+    private string GetBgClassByVariant()
+    {
+        return Variant switch
+        {
+            Variant.Filled => "bg-gray-100",
+            _ => "bg-transparent"
+        };
+    }
+    /// <summary>
+    /// Returns the border radius class based on the <see cref="Size"/>.
+    /// If <see cref="Variant"/> is <c>Text</c>, no border radius is applied.
+    /// </summary>
+    private string GetBorderRadiusClassBySize()
+    {
+        // If Variant is Text, return no border radius
+        if (Variant == Variant.Text)
+            return string.Empty;
+
+        return Size switch
+        {
+            Size.Large or Size.Medium => "rounded-xl",
+            _ => "rounded-lg"
+        };
+    }
+
+    /// <summary>
+    /// Returns the text size class based on the <see cref="Size"/>.
+    /// </summary>
+    private string GetTextValueSizeClass()
+    {
+        return Size switch
+        {
+            Size.Small or Size.Medium => "text-sm",
+            Size.Large => "text-base",
+            _ => "text-sm"
         };
     }
 
@@ -357,38 +424,76 @@ public partial class InputField : ComponentBase
     /// Returns padding, font size, rounding, and background classes based on size and variant.
     /// Border styles are handled separately in <see cref="GetBorderClassByVariant"/>.
     /// </summary>
-    private string GetClassByVariantSize()
+    private string GetClassByVariantSize(bool hasStartIcon = false, bool hasEndIcon = false, bool hasLabel = true)
     {
-        var map = new Dictionary<(Size, Variant), string>
+
+        // Icon Padding
+        var iconPaddingStart = hasStartIcon
+            ? IconSize switch
+            {
+                Size.Small => "pl-9",
+                Size.Large => "pl-11",
+                _ => "pl-10"
+            }
+            : string.Empty;
+
+        var iconPaddingEnd = hasEndIcon
+            ? IconSize switch
+            {
+                Size.Small => "pr-9",
+                Size.Large => "pr-11",
+                _ => "pr-10"
+            }
+            : string.Empty;
+
+        // Vertical padding (merged top and bottom)
+        string verticalPadding = Variant switch
         {
-            // Filled
-            // { (Size.Small, Variant.Filled), "px-4 pb-1.5 pt-4 text-sm rounded-t-lg bg-gray-200" },
-            // { (Size.Medium, Variant.Filled), "px-4 pb-1.5 pt-5 text-sm rounded-t-xl bg-gray-200" },
-            // { (Size.Large, Variant.Filled), "px-4 pb-2 pt-5 text-base rounded-t-xl bg-gray-200" },
-            { (Size.Small, Variant.Filled), "px-4 pb-1.5 pt-4 text-sm rounded-lg bg-gray-100" },
-            { (Size.Medium, Variant.Filled), "px-4 pb-1.5 pt-5 text-sm rounded-xl bg-gray-100" },
-            { (Size.Large, Variant.Filled), "px-4 pb-2 pt-5 text-base rounded-xl bg-gray-100" },
+            Variant.Filled when !hasLabel => Size switch
+            {
+                Size.Small => "py-3",
+                Size.Medium => "py-3.5",
+                Size.Large => "py-4",
+                _ => string.Empty
+            },
+            Variant.Filled => Size switch
+            {
+                Size.Small => "py-2 pt-4.5", // original behavior
+                Size.Medium => "py-2 pt-5.5",
+                Size.Large => "py-2.5 pt-5.5",
+                _ => string.Empty
+            },
+            Variant.Outlined => Size switch
+            {
+                Size.Small => "py-3",
+                Size.Medium => "py-3.5",
+                Size.Large => "p-4",
+                _ => string.Empty
+            },
+            Variant.Text => Size switch
+            {
+                Size.Small => "py-3",
+                Size.Medium => "py-3.5",
+                Size.Large => "p-4",
+                _ => string.Empty
+            },
+            _ => string.Empty
 
-            // Outlined
-            { (Size.Small, Variant.Outlined), "px-4 py-3 text-sm rounded-lg bg-transparent" },
-            { (Size.Medium, Variant.Outlined), "px-4 py-3.5 text-sm rounded-xl bg-transparent" },
-            { (Size.Large, Variant.Outlined), "p-4 text-base rounded-xl bg-transparent" },
-
-            // Text
-            { (Size.Small, Variant.Text), "px-4 py-3 text-sm bg-transparent" },
-            { (Size.Medium, Variant.Text), "px-4 py-3.5 text-sm bg-transparent" },
-            { (Size.Large, Variant.Text), "p-4 text-base bg-transparent" },
         };
+        var bgClass = GetBgClassByVariant();
+        var borderRadiusClass = GetBorderRadiusClassBySize();
+        var textClass = GetTextValueSizeClass();
 
-        return map.TryGetValue((Size, Variant), out var classString) ? classString : string.Empty;
+        return $"{iconPaddingStart} {textClass} {verticalPadding} {bgClass} {borderRadiusClass} {iconPaddingEnd}".Trim();
+
     }
-    
+
     /// <summary>
     /// Returns the label color class based on validation and focus states.
     /// </summary>
     private string GetLabelColorClass()
     {
-        if (ValidationMessages.Any())
+        if (HasError)
         {
             return "peer-focus:text-red-600 text-red-600";
         }

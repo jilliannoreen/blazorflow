@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorFlow.Components;
 
-public partial class Drawer : ComponentBase
+public partial class Drawer : ComponentBase 
 {
     [Inject] private IDrawerService DrawerInterop { get; set; } 
     /// <summary>
@@ -125,6 +125,12 @@ public partial class Drawer : ComponentBase
         }
     }
 
+    /// <summary>
+    /// Reinitializes the drawer component on the client side by invoking the JavaScript interop.
+    /// This is useful for reapplying options after dynamic changes to placement, backdrop behavior,
+    /// body scrolling, or edge snapping.
+    /// This method should be called after the drawer is rendered or after any configuration changes.
+    /// </summary>
     public async Task ReInitAsync()
     {
         var options = new DrawerOptions

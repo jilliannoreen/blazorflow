@@ -1,21 +1,32 @@
-<div id="@Id" 
-     tabindex="-1" 
-     class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-    <div class="relative w-full @GetSizeClass() max-h-full m-2">
-        <!-- Modal content -->
-        <div class="relative p-11 bg-white rounded-2xl shadow-sm flex flex-col gap-3 dark:bg-gray-700">
-            <!-- Modal header -->
-            <div class="flex items-center justify-between rounded-t dark:border-gray-600 border-gray-200">
-                @DialogHeader
-            </div>
-            <!-- Modal body -->
-            <div class="space-y-4">
-                @DialogContent
-            </div>
-            <!-- Modal footer -->
-            <div class="flex flex-wrap gap-2 justify-center items-center border-gray-200 rounded-b dark:border-gray-600">
-                @DialogFooter
+@if (_isVisible)
+{
+    <div id="@Id" tabindex="-1" 
+         class="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full flex">
+        <div class="relative w-full @GetSizeClass() max-h-full m-2">
+            <!-- Modal content -->
+            <div class="relative p-11 bg-white rounded-2xl shadow-sm flex flex-col gap-3">
+                @if (DialogHeader is not null)
+                {
+                    <!-- Modal header -->
+                    <div class="flex items-center justify-between">
+                        @DialogHeader
+                    </div>
+                }
+                @if (DialogBody is not null)
+                {
+                    <!-- Modal body -->
+                    <div class="space-y-4">
+                        @DialogBody
+                    </div>
+                }
+                @if (DialogFooter is not null)
+                {
+                    <!-- Modal footer -->
+                    <div class="flex flex-wrap gap-2 justify-center items-center">
+                        @DialogFooter
+                    </div>
+                }
             </div>
         </div>
     </div>
-</div>
+}

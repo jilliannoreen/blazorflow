@@ -1,5 +1,16 @@
-<h3>ToastProvider</h3>
-
-@code {
+<div id="@(ProviderId ?? $"toast-provider-{Guid.NewGuid().ToString()}")" 
+    class="@PositionClasses">
     
-}
+    @foreach (var toast in _toasts)
+    {
+        <Toast @key="toast.Id" 
+                Title="@toast.Title"
+                Subtitle="@toast.Subtitle"
+                Type="@toast.Type"
+                Duration="@toast.Options.Duration"
+                Dismissible="@toast.Options.Dismissible"
+                Icon="@toast.Options.Icon"
+                OnClose="@(() => HandleToastClose(toast.Id))" />
+    }
+    
+</div>

@@ -2,6 +2,6 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorFlow.Components;
 
-public partial class Switch : ComponentBase
+public partial class Switch 
 {
 }

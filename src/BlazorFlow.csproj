@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -16,15 +16,18 @@
 		<PackageProjectUrl>https://github.com/jilliannoreen/BlazorFlow</PackageProjectUrl>
 		<RepositoryType>git</RepositoryType>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<StaticWebAssetBasePath>BlazorFlow</StaticWebAssetBasePath>
-    </PropertyGroup>
+		<StaticWebAssetBasePath>_content/BlazorFlow</StaticWebAssetBasePath>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
 
     <ItemGroup>
-        <SupportedPlatform Include="browser"/>
+        <SupportedPlatform Include="browser" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.1" />
     </ItemGroup>
+
+
 
 </Project>
