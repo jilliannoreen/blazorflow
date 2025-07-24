@@ -165,6 +165,9 @@ public partial class InputField : ComponentBase, IDisposable
         : !string.IsNullOrWhiteSpace(HelperText) ? $"{Id}-helper-text"
         : null;
 
+    private CancellationTokenSource? _debounceCts;
+
+
     #endregion
 
     #region Lifecycle
@@ -205,10 +208,26 @@ public partial class InputField : ComponentBase, IDisposable
     /// </summary>
     private async Task HandleInput(ChangeEventArgs e)
     {
-        if (Immediate)
+        var newValue = e.Value?.ToString() ?? string.Empty;
+
+        // Cancel any previous debounce task
+        _debounceCts?.Cancel();
+        _debounceCts?.Dispose();
+        _debounceCts = new CancellationTokenSource();
+
+        try
         {
-            var newValue = e.Value?.ToString() ?? string.Empty;
-            await SetValueAsync(newValue);
+            // Wait for debounce duration
+            await Task.Delay(300, _debounceCts.Token);
+
+            if (Immediate)
+            {
+                await SetValueAsync(newValue);
+            }
+        }
+        catch (TaskCanceledException)
+        {
+            // Swallow: this is expected when rapidly typing
         }
     }
     
