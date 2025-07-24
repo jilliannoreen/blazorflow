@@ -212,12 +212,6 @@ public partial class InputField : ComponentBase
         }
     }
     
-    private async Task HandleChange(ChangeEventArgs e)
-    {
-        var newValue = e.Value?.ToString() ?? string.Empty;
-        if (!Immediate) await SetValueAsync(newValue);
-        
-    }
 
     /// <summary>
     /// Updates internal state, triggers binding, and notifies EditContext.
