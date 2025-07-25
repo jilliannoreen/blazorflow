@@ -26,14 +26,16 @@
         </span>
     }
 
-    <input type="@Type.ToString()" 
+    <input @ref="_inputElementRef"
+           @bind:get="Value"
+           @bind:set="HandleDebouncedInputFromJs"
+           @bind:event="@((Immediate ? "oninput" : "onchange"))"
+           type="@Type.ToString()" 
            id="@Id" 
            placeholder="@PlaceholderValue" 
            class="@InputClass" 
            disabled="@Disabled"
-           readonly="@ReadOnly" 
-           value="@Value"
-           oninput="@HandleInput"
+           readonly="@ReadOnly"
            aria-invalid="@ValidationMessages.Any()"
            autocomplete="@AutoComplete"
            aria-describedby="@AriaDescribedById"/>

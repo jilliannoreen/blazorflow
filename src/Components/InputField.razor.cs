@@ -4,6 +4,7 @@ using BlazorFlow.Services;
 using BlazorFlow.Utilities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.JSInterop;
 
 namespace BlazorFlow.Components;
 
@@ -14,7 +15,7 @@ public partial class InputField : ComponentBase, IDisposable
     /// <summary>
     /// Specifies the input type (text, password, email, etc.).
     /// </summary>
-    [Parameter] public required InputType Type { get; set; }
+    [Parameter] public required InputType Type { get; set; } = InputType.Text;
 
     /// <summary>
     /// Custom CSS class for the wrapper container.
@@ -165,7 +166,22 @@ public partial class InputField : ComponentBase, IDisposable
         : !string.IsNullOrWhiteSpace(HelperText) ? $"{Id}-helper-text"
         : null;
 
-    private CancellationTokenSource? _debounceCts;
+    [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
+
+
+    /// <summary>
+    /// Represents a reference to the HTML input element in the DOM.
+    /// This is used to pass the actual DOM element to JavaScript functions,
+    /// for example, to attach event listeners or trap focus.
+    /// </summary>
+    private ElementReference _inputElementRef;
+
+    /// <summary>
+    /// Provides a .NET object reference that can be passed to JavaScript.
+    /// This allows JavaScript to invoke C# methods on this specific Blazor component instance.
+    /// It's crucial for JavaScript to 'call back' into Blazor, e.g., for debounced input events.
+    /// </summary>
+    private DotNetObjectReference<InputField>? _dotNetRef;
 
 
     #endregion
@@ -188,6 +204,23 @@ public partial class InputField : ComponentBase, IDisposable
     }
 
     /// <summary>
+    /// Initializes JS interop after the component has rendered.
+    /// </summary>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _dotNetRef = DotNetObjectReference.Create(this);
+
+            if (Immediate)
+            {
+                // Debounce for 300ms. Adjust as needed.
+                await JSRuntime.InvokeVoidAsync("flowbiteBlazorInterop.input.setupInputDebounce", _dotNetRef, _inputElementRef, nameof(HandleDebouncedInputFromJs), 300);
+            }
+        }
+    }
+
+    /// <summary>
     /// Detaches event handlers from EditContext.
     /// </summary>
     public void Dispose()
@@ -197,6 +230,8 @@ public partial class InputField : ComponentBase, IDisposable
             EditContext.OnFieldChanged -= HandleFieldChanged;
             EditContext.OnValidationStateChanged -= HandleValidationStateChanged;
         }
+
+        _dotNetRef?.Dispose(); // Dispose DotNetObjectReference
     }
 
     #endregion
@@ -208,29 +243,25 @@ public partial class InputField : ComponentBase, IDisposable
     /// </summary>
     private async Task HandleInput(ChangeEventArgs e)
     {
-        var newValue = e.Value?.ToString() ?? string.Empty;
-
-        // Cancel any previous debounce task
-        _debounceCts?.Cancel();
-        _debounceCts?.Dispose();
-        _debounceCts = new CancellationTokenSource();
-
-        try
+        if (Immediate)
         {
-            // Wait for debounce duration
-            await Task.Delay(300, _debounceCts.Token);
-
-            if (Immediate)
-            {
-                await SetValueAsync(newValue);
-            }
-        }
-        catch (TaskCanceledException)
-        {
-            // Swallow: this is expected when rapidly typing
+            var newValue = e.Value?.ToString() ?? string.Empty;
+            await SetValueAsync(newValue);
         }
     }
-    
+
+    /// <summary>
+    /// This method is called from JavaScript after the debounce delay.
+    /// </summary>
+    /// <param name="newValue">The debounced value from the input field.</param>
+    [JSInvokable] // Mark as invokable from JavaScript
+    public Task HandleDebouncedInputFromJs(string newValue)
+    {
+        // This is where the actual update to the Blazor component's state happens
+        // after the client-side debounce.
+        return SetValueAsync(newValue);
+    }
+
 
     /// <summary>
     /// Updates internal state, triggers binding, and notifies EditContext.

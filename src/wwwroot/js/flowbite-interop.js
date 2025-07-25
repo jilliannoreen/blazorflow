@@ -174,3 +174,50 @@ window.flowbiteBlazorInterop.dialog = (function () {
         }
     };
 })();
+
+// INPUT DEBOUNCE INTEROP (New section)
+window.flowbiteBlazorInterop.input = {
+    /**
+     * Sets up a debounced 'input' event listener on a given HTML element.
+     * @param {DotNetObjectReference} dotNetHelper - The .NET object reference to invoke methods on.
+     * @param {HTMLElement} inputElement - The HTML input element to attach the listener to.
+     * @param {string} methodName - The name of the .NET method to invoke.
+     * @param {number} delay - The debounce delay in milliseconds.
+     */
+    setupInputDebounce: function (dotNetHelper, inputElement, methodName, delay) {
+        let timeout;
+
+        if (!inputElement) {
+            console.error("[InputDebounceInterop] Input element not found for debounce setup.");
+            return;
+        }
+
+        // Remove any existing oninput listener to prevent duplicates if called multiple times
+        // This is important if component is re-rendered without full disposal.
+        inputElement.oninput = null;
+
+        inputElement.oninput = (event) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                dotNetHelper.invokeMethodAsync(methodName, event.target.value);
+            }, delay);
+        };
+
+        inputElement._debounceCleanup = () => {
+            inputElement.oninput = null;
+            // No need to dispose dotNetHelper here, as Blazor's Dispose() handles that.
+        };
+    },
+
+    /**
+     * Cleans up the debounced input event listener from an element.
+     * @param {HTMLElement} inputElement - The HTML input element to clean up.
+     */
+    cleanupInputDebounce: function (inputElement) {
+        if (inputElement && typeof inputElement._debounceCleanup === 'function') {
+            inputElement._debounceCleanup();
+            delete inputElement._debounceCleanup; // Remove the property
+        }
+    }
+};
+
