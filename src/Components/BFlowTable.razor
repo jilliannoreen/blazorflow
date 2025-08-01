@@ -1,0 +1,64 @@
+﻿@typeparam TItem
+@using BlazorFlow.Icons
+@typeparam TRequest
+
+<div @ref="_tableContainer" class="w-full h-full relative overflow-x-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 scrollbar">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="@TableHeaderClass">
+            <tr>@HeaderTemplate</tr>
+        </thead>
+        <tbody>
+            @if (_firstLoad)
+            {
+                <tr>
+                    <td colspan="100%" class="text-center p-4 text-gray-500">
+                        Loading...
+                    </td>
+                </tr>
+            }
+            else if (_isEmpty)
+            {
+                <tr>
+                    <td colspan="100%" class="text-center p-4 text-gray-400">
+                        No data found.
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var item in _items)
+                {
+                    <tr class="@TableRowClass" @onclick="@(() => OnRowClick.InvokeAsync(item))">
+                        @RowTemplate(item)
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    @if (UseCursorPagination)
+    {
+        @if (_hasMoreData)
+        {
+            <div class="flex justify-center mt-2">
+                <Button Type="ButtonType.Button"
+                        Variant="Variant.Text"
+                        OnClick="ShowMoreAsync"
+                        Class="@("text-blue-600 hover:text-blue-600 " + (!_isLoading ? "underline" : string.Empty))"
+                        IsLoading="_isLoading">
+                    Show more
+                </Button>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="flex justify-center lg:justify-end items-center gap-2 mt-2">
+            <Button Type="ButtonType.Button" Variant="Variant.Text" Icon="@Icons.Outlined.ChevronLeftDouble" VisualPlacement="VisualPlacement.Start" Size="ButtonSize.Small" Disabled="@(_currentPage <= 1)" OnClick="@(() => GoToPage(1))"></Button>
+            <Button Type="ButtonType.Button" Variant="Variant.Text" Icon="@Icons.Outlined.ChevronLeft" VisualPlacement="VisualPlacement.Start" Size="ButtonSize.Small" Disabled="@(_currentPage <= 1)" OnClick="@(() => GoToPage(_currentPage - 1))"></Button>
+            <span>@_currentPage of @(Math.Ceiling((double)_totalPages / _pageSize))</span>
+            <Button Type="ButtonType.Button" Variant="Variant.Text" Icon="@Icons.Outlined.ChevronRight" VisualPlacement="VisualPlacement.Start" Size="ButtonSize.Small" Disabled="@(_currentPage >= Math.Ceiling((double)_totalPages / _pageSize))" OnClick="@(() => GoToPage(_currentPage + 1))"></Button>
+            <Button Type="ButtonType.Button" Variant="Variant.Text" Icon="@Icons.Outlined.ChevronRightDouble" VisualPlacement="VisualPlacement.Start" Size="ButtonSize.Small" Disabled="@(_currentPage >= Math.Ceiling((double)_totalPages / _pageSize))" OnClick="@(() => GoToPage(_totalPages))"></Button>
+        </div>
+    }
+</div>

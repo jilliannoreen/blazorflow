@@ -127,6 +127,11 @@ public partial class InputField : ComponentBase, IDisposable
     /// Add autocomplete control
     /// </summary>
     [Parameter] public bool AutoComplete { get; set; } = false;
+    /// <summary>
+    /// Additional arbitrary attributes to apply to the root element.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object?> UserAttributes { get; set; } = new Dictionary<string, object?>();
 
     #endregion
 
@@ -433,7 +438,7 @@ public partial class InputField : ComponentBase, IDisposable
     {
         return Variant switch
         {
-            Variant.Filled => "bg-gray-100",
+            Variant.Filled => "bg-white",
             _ => "bg-transparent"
         };
     }

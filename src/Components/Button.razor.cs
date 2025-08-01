@@ -42,7 +42,7 @@ public partial class Button
     private string ButtonClass => ClassBuilder
         .Default("inline-flex justify-center items-center align-middle gap-1 font-medium leading-none text-center rounded-lg focus:outline-none")
         .AddClass(GetSizeClass())
-        .AddClass(Disabled ? "cursor-not-allowed text-white bg-gray-300" : $"cursor-pointer {GetVariantColorClass()}")
+        .AddClass(Disabled ? $"cursor-not-allowed {GetDisabledClassByVariant()}" : $"cursor-pointer {GetVariantColorClass()}")
         .AddClass("w-full", FullWidth)
         .AddClass("rounded-full!", FullRounded)
         .AddClass(Class)
@@ -74,12 +74,25 @@ public partial class Button
             _ => "px-5 py-2.5 text-sm min-h-[40px]"
         };
     }
+    
+    /// <summary>
+    /// Returns the appropriate CSS classes for disabled button depending on variant.
+    /// </summary>
+    private string GetDisabledClassByVariant()
+    {
+        return Variant switch
+        {
+            Variant.Filled => "text-white bg-gray-300",
+            Variant.Outlined => "text-gray-300 border-gray-300",
+            _ => "text-gray-300"
+        };
+    }
 
     /// <summary>
     /// Returns the appropriate loading spinner size classes.
     /// </summary>
     private string GetLoadingClass() => ClassBuilder
-        .Default("inline w-4 h-4 me-3 text-white animate-spin")
+        .Default("inline w-4 h-4 me-3 text-inherit animate-spin")
         .AddClass(Size switch
         {
             ButtonSize.ExtraSmall or ButtonSize.Small => "size-4.5",

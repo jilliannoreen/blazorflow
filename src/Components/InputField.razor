@@ -38,7 +38,8 @@
            readonly="@ReadOnly"
            aria-invalid="@ValidationMessages.Any()"
            autocomplete="@AutoComplete"
-           aria-describedby="@AriaDescribedById"/>
+           aria-describedby="@AriaDescribedById"
+           @attributes="UserAttributes"/>
     
     
     @if (VisualPlacement == Enums.VisualPlacement.End)

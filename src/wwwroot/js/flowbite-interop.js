@@ -221,3 +221,23 @@ window.flowbiteBlazorInterop.input = {
     }
 };
 
+// TABLE HEIGHT CALCULATION INTEROP
+window.flowbiteBlazorInterop.table = {
+    /**
+     * Calculates how many table rows can fit in a container based on estimated row height.
+     * @param {HTMLElement} container - The element containing the table.
+     * @param {number} rowHeight - Estimated height of a row in pixels (default: 40).
+     * @returns {number} - Number of rows that can fit.
+     */
+    getAvailableRowCount: function (container, rowHeight = 40) {
+        if (!container) {
+            console.warn("[TableInterop] Container not found.");
+            return 10; // fallback
+        }
+
+        const containerHeight = container.clientHeight;
+        const availableRows = Math.floor((containerHeight - 70 )  / rowHeight);
+
+        return availableRows > 10 ? availableRows : 10;
+    }
+};
