@@ -1,4 +1,5 @@
-﻿using BlazorFlow.Utilities;
+﻿using BlazorFlow.Enums;
+using BlazorFlow.Utilities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
@@ -18,14 +19,14 @@ public partial class BFlowTable<TItem, TRequest> : ComponentBase
     [Parameter] public required Func<TableRequestParams, TRequest> BuildRequest { get; set; }
 
     [Parameter] public bool StickyHeader { get; set; } = false;
-    [Parameter] public bool UseCursorPagination { get; set; } = true;
+    [Parameter] public bool IsShowMoreEnabled { get; set; } = true;
     [Parameter] public Func<object, string?>? GetCursorFromItem { get; set; }
-    [Parameter] public IEnumerable<TItem>? Items { get; set; }
+    [Parameter] public PaginationMode PaginationMode { get; set; } = PaginationMode.Offset;
 
 
     private ElementReference _tableContainer;
 
-    private List<TItem> _items = [];
+    private HashSet<TItem> _items = [];
     private bool _isLoading = false;
     private bool _firstLoad = true;
     private bool _hasMoreData = false;
@@ -76,14 +77,23 @@ public partial class BFlowTable<TItem, TRequest> : ComponentBase
     /// </summary>
     private async Task LoadInitialAsync()
     {
-        
         _isLoading = true;
         _items.Clear();
         _cursor = null;
         _currentPage = 1;
 
-        if (UseCursorPagination)
-            await LoadCursorPageAsync();
+        if (IsShowMoreEnabled)
+        {
+            switch (PaginationMode)
+            {
+                case PaginationMode.Cursor:
+                    await LoadByCursorAsync();
+                    break;
+                default:
+                    await LoadByOffsetAsync();
+                    break;
+            }
+        }
         else 
             await LoadPagedPageAsync();
             
@@ -99,14 +109,21 @@ public partial class BFlowTable<TItem, TRequest> : ComponentBase
         if (_isLoading || !_hasMoreData) return;
 
         _isLoading = true;
-        await LoadCursorPageAsync();
+        if (PaginationMode == PaginationMode.Cursor)
+            await LoadByCursorAsync();
+        else
+        {
+            _currentPage++;
+            await LoadByOffsetAsync();
+        }
+
         _isLoading = false;
     }
 
     /// <summary>
     /// Loads a new cursor-based page.
     /// </summary>
-    private async Task LoadCursorPageAsync()
+    private async Task LoadByCursorAsync()
     {
         var request = BuildRequest.Invoke(new TableRequestParams()
         {
@@ -125,7 +142,7 @@ public partial class BFlowTable<TItem, TRequest> : ComponentBase
         if (resultList.Count > 0)
         {
             var items = resultList.Take(_pageSize).ToList();
-            _items.AddRange(items);
+            _items.UnionWith(items);
             
             var lastItem = items.Last();
             if (lastItem != null) 
@@ -133,6 +150,29 @@ public partial class BFlowTable<TItem, TRequest> : ComponentBase
         }
 
         _hasMoreData = resultList.Count > _pageSize;
+        _isEmpty = !_items.Any();
+    }
+    
+    private async Task LoadByOffsetAsync()
+    {
+        var request = BuildRequest.Invoke(new TableRequestParams()
+        {
+            PageIndex = _currentPage,
+            Size = _pageSize,
+        });
+
+        var response = await LoadData(request);
+        if (response?.Data is null)
+        {
+            _isEmpty = !_items.Any();
+            return;
+        }
+        
+        var resultList = response.Data.ToList();
+        if (resultList.Count > 0)
+            _items.UnionWith(resultList);
+        
+        _hasMoreData = response.Count > _items.Count();
         _isEmpty = !_items.Any();
     }
 
@@ -165,11 +205,9 @@ public partial class BFlowTable<TItem, TRequest> : ComponentBase
         var response = await LoadData(request);
         var resultList = response.Data.ToList();
 
-        _items = resultList;
+        _items = [..resultList];
         _isEmpty = !_items.Any();
-
-
-        _totalPages = response.Count;
+        _totalPages = response.Count; 
     }
     
     
@@ -177,7 +215,7 @@ public partial class BFlowTable<TItem, TRequest> : ComponentBase
     {
         _firstLoad = true;
         _hasMoreData = false;
-        await LoadInitialAsync(); // Example: re-fetch data
+        await LoadInitialAsync(); 
     }
 }
 
