@@ -64,7 +64,7 @@ public partial class Toast : ComponentBase
     /// Dynamically builds the CSS class for the toast wrapper based on state and type.
     /// </summary>
     private string ToastClass => ClassBuilder
-        .Default("flex items-center w-full max-w-md bg-white p-4 rounded-lg shadow-sm")
+        .Default("flex items-center w-full max-w-md bg-white p-4 gap-4 rounded-lg shadow-sm")
         .AddClass(Type switch
             {
                 ToastType.Success => "text-(--success)",
@@ -134,9 +134,9 @@ public partial class Toast : ComponentBase
 public class ToastOptions
 {
     /// <summary>
-    /// Duration before toast auto-dismisses (default: 3000 ms).
+    /// Duration before toast auto-dismisses (default: 4000 ms).
     /// </summary>
-    public int Duration { get; set; } = 3000;
+    public int Duration { get; set; } = 4000;
 
     /// <summary>
     /// Whether the toast is manually dismissible.

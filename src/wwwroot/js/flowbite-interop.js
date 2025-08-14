@@ -232,12 +232,12 @@ window.flowbiteBlazorInterop.table = {
     getAvailableRowCount: function (container, rowHeight = 40) {
         if (!container) {
             console.warn("[TableInterop] Container not found.");
-            return 10; // fallback
+            return 1; // fallback
         }
 
         const containerHeight = container.clientHeight;
         const availableRows = Math.floor((containerHeight - 70 )  / rowHeight);
 
-        return availableRows > 10 ? availableRows : 10;
+        return availableRows > 1 ? availableRows : 1;
     }
 };
