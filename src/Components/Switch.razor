@@ -1,5 +1,21 @@
-<h3>Switch</h3>
+@typeparam TValue
 
-@code {
-    
-}
+<div class="inline-flex items-center gap-2">
+    <label for="@Id" class="inline-flex items-center cursor-pointer">
+        <input type="checkbox"
+               id="@Id"
+               class="sr-only peer"
+               role="switch"
+               aria-checked="@IsChecked"
+               checked="@IsChecked"
+               disabled="@Disabled"
+               @onchange="OnChangeHandler" />
+
+        <div class="@SwitchClass"></div>
+    </label>
+
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <span id="@($"{Id}-label")" class="text-sm text-gray-700 dark:text-gray-300">@Label</span>
+    }
+</div>

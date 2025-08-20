@@ -36,7 +36,7 @@ public partial class NavItem
     /// Main navigation item class builder with responsive behavior
     /// </summary>
     private string NavItemClass => ClassBuilder
-        .Default("flex justify-center items-center gap-2 px-2 py-2.5 rounded-lg text-white hover:text-white focus:text-white active:text-white hover:bg-neutral-900 cursor-pointer")
+        .Default("flex justify-center items-center gap-2 px-2 py-2.5 rounded-lg text-white hover:text-white focus:text-white focus:outline-none active:text-white hover:bg-neutral-900 cursor-pointer")
         .AddClass("lg:justify-start",!IsCollapsed)
         .AddClass(Class)
         .Build();

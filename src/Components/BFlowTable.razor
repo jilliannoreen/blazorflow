@@ -3,9 +3,9 @@
 @typeparam TRequest
 
 <div @ref="_tableContainer" class="w-full h-full relative overflow-x-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+    <table class="w-full h-[calc(100%-70px)] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead class="@TableHeaderClass">
-        <tr>@HeaderTemplate</tr>
+            <tr>@HeaderTemplate</tr>
         </thead>
         <tbody>
         @if (_firstLoad)
@@ -20,7 +20,14 @@
         {
             <tr>
                 <td colspan="100%" class="text-center p-4 text-gray-400">
-                    No data found.
+                    @if (EmptyState is not null)
+                    {
+                        @EmptyState
+                    }
+                    else
+                    {
+                        <span>No data found.</span>
+                    }
                 </td>
             </tr>
         }

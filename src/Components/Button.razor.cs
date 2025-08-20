@@ -17,6 +17,7 @@ public partial class Button
     [Parameter] public bool Disabled { get; set; } = false;
     [Parameter] public bool FullWidth { get; set; } = false;
     [Parameter] public bool FullRounded { get; set; } = false;
+    [Parameter] public bool DropShadow { get; set; } = false;
     [Parameter] public Variant Variant { get; set; } = Variant.Filled;
     [Parameter] public Color Color { get; set; } = Color.Primary;
 
@@ -43,6 +44,7 @@ public partial class Button
         .Default("inline-flex justify-center items-center align-middle gap-1 font-medium leading-none text-center rounded-lg focus:outline-none")
         .AddClass(GetSizeClass())
         .AddClass(Disabled ? $"cursor-not-allowed {GetDisabledClassByVariant()}" : $"cursor-pointer {GetVariantColorClass()}")
+        .AddClass("shadow-sm", DropShadow)
         .AddClass("w-full", FullWidth)
         .AddClass("rounded-full!", FullRounded)
         .AddClass(Class)
@@ -53,7 +55,7 @@ public partial class Button
     /// </summary>
     private async Task HandleClick(MouseEventArgs e)
     {
-        if (OnClick.HasDelegate && !Disabled)
+        if (OnClick.HasDelegate && !Disabled && !IsLoading)
         {
             await OnClick.InvokeAsync(e);
         }
@@ -92,7 +94,7 @@ public partial class Button
     /// Returns the appropriate loading spinner size classes.
     /// </summary>
     private string GetLoadingClass() => ClassBuilder
-        .Default("inline w-4 h-4 me-3 text-inherit animate-spin")
+        .Default("inline me-3 text-inherit animate-spin")
         .AddClass(Size switch
         {
             ButtonSize.ExtraSmall or ButtonSize.Small => "size-4.5",
@@ -155,7 +157,7 @@ public partial class Button
             { (Color.Dark, Variant.Text), "text-gray-700 bg-transparent" },
             
             // Light
-            { (Color.Light, Variant.Filled), "text-gray-900 bg-white"},
+            { (Color.Light, Variant.Filled), "text-gray-900 bg-white hover:bg-gray-50"},
             { (Color.Light, Variant.Outlined), "text-gray-700 border border-gray-700 hover:bg-gray-700 hover:text-white bg-transparent" },
             { (Color.Light, Variant.Text), "text-gray-700 bg-transparent" },
         };

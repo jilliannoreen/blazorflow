@@ -12,6 +12,7 @@ public partial class BFlowTable<TItem, TRequest> : ComponentBase
     [Parameter] public required RenderFragment HeaderTemplate { get; set; }
     [Parameter] public required RenderFragment<TItem> RowTemplate { get; set; }
     [Parameter] public EventCallback<TItem> OnRowClick { get; set; }
+    [Parameter] public RenderFragment EmptyState { get; set; }
     [Parameter] public string RowClass { get; set; }
     [Parameter] public string HeaderClass { get; set; }
 

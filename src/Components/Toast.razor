@@ -31,11 +31,11 @@
             </div>
         }
 
-        <div class="flex flex-col">
-            <div class="text-base font-semibold leading-snug text-wrap break-all">@((MarkupString)Title)</div>
+        <div class="flex flex-col justify-center">
+            <div class="text-base font-semibold leading-snug text-wrap break-normal hyphens-auto">@((MarkupString)Title)</div>
             @if (!string.IsNullOrWhiteSpace(Subtitle))
             {
-                <p class="text-sm text-gray-600 leading-snug text-wrap break-all">@Subtitle</p>
+                <p class="text-sm text-gray-600 leading-snug text-wrap break-normal hyphens-auto">@Subtitle</p>
             }
         </div>
     </div>

@@ -19,49 +19,50 @@
 </style>
 
 <div class="@InputWrapperClass">
-    @if (VisualPlacement == Enums.VisualPlacement.Start)
-    {
-        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 @IconClass">
-            <Icon SvgIcon="@Icon" Size="@IconSize"></Icon>
-        </span>
-    }
+    <div class="relative">
+        @if (VisualPlacement == Enums.VisualPlacement.Start)
+        {
+            <span class="@GetIconClass">
+                <Icon SvgIcon="@(HasError ? Icons.Icons.Outlined.Error : Icon)" Size="@IconSize"></Icon>
+            </span>
+        }
 
-    <input @ref="_inputElementRef"
-           @bind:get="Value"
-           @bind:set="HandleDebouncedInputFromJs"
-           @bind:event="@((Immediate ? "oninput" : "onchange"))"
-           type="@Type.ToString()" 
-           id="@Id" 
-           placeholder="@PlaceholderValue" 
-           class="@InputClass" 
-           disabled="@Disabled"
-           readonly="@ReadOnly"
-           aria-invalid="@ValidationMessages.Any()"
-           autocomplete="@AutoComplete"
-           aria-describedby="@AriaDescribedById"
-           @attributes="UserAttributes"/>
-    
-    
-    @if (VisualPlacement == Enums.VisualPlacement.End)
-    {
-        <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 @IconClass">
-            <Icon SvgIcon="@Icon" Size="@IconSize"></Icon>
-        </span>
-    }
+        <input @ref="_inputElementRef"
+               @bind:get="Value"
+               @bind:set="HandleDebouncedInputFromJs"
+               @bind:event="@((Immediate ? "oninput" : "onchange"))"
+               type="@Type.ToString()"
+               id="@Id"
+               placeholder="@PlaceholderValue"
+               class="@InputClass"
+               disabled="@Disabled"
+               readonly="@ReadOnly"
+               aria-invalid="@ValidationMessages.Any()"
+               autocomplete="@AutoComplete"
+               aria-describedby="@AriaDescribedById"
+               @attributes="UserAttributes"/>
 
-    <label for="@Id" class="@LabelClass">@Label</label>
-    
+        @if (VisualPlacement == Enums.VisualPlacement.End || HasError)
+        {
+            <span class="@GetIconClass">
+                <Icon SvgIcon="@(HasError ? Icons.Icons.Outlined.Error : Icon)" Size="@IconSize"></Icon>
+            </span>
+        }
+
+        <label for="@Id" class="@LabelClass">@Label</label>
+    </div>
+
     @if (HasError)
     {
-        <p id="@($"{Id}-error")" class="mt-2 text-xs text-red-600 dark:text-red-400">
+        <p id="@($"{Id}-error")" class="my-2 text-xs text-red-600 dark:text-red-400">
             @(ErrorText ?? ValidationMessages.FirstOrDefault())
         </p>
     }
     else if (!string.IsNullOrWhiteSpace(HelperText))
     {
-        <p id="@($"{Id}-helper-text")" class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+        <p id="@($"{Id}-helper-text")" class="my-2 text-xs text-gray-500 dark:text-gray-400">
             @HelperText
         </p>
     }
+    
 </div>
-

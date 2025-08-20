@@ -328,6 +328,12 @@ public partial class InputField : ComponentBase, IDisposable
 
     #region Style & Class Builders
 
+    private string GetIconClass => ClassBuilder
+        .Default("absolute top-1/2 -translate-y-1/2")
+        .AddClass(VisualPlacement == VisualPlacement.Start ? "left-4" : "right-4")
+        .AddClass(HasError ? "text-red-600" : "text-gray-400")
+        .Build();
+    
     /// <summary>
     /// Returns the placeholder only if no label is set.
     /// </summary>

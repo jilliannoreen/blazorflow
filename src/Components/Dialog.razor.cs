@@ -181,15 +181,16 @@ public partial class Dialog : ComponentBase, IAsyncDisposable
     private string Id { get; } = $"dialog-{Guid.NewGuid()}";
 
     private string DialogClass => ClassBuilder
-        .Default("overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full")
+        .Default("overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-full max-h-full")
         .AddClass(Class)
         .Build();
     
     private string DialogContainerClass => ClassBuilder
-        .Default("relative p-11 rounded-2xl shadow-sm flex flex-col gap-3")
+        .Default("relative p-10 rounded-2xl shadow-sm flex flex-col gap-3")
         .AddClass(BackgroundColor switch
         {
             Color.Secondary => "bg-(--secondary)",
+            Color.Surface => "bg-(--surface)",
             _ => "bg-white"
         })
         .Build();
