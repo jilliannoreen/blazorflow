@@ -117,7 +117,6 @@ public partial class Dialog : ComponentBase, IAsyncDisposable
         var options = new DialogOptions
         {
             Closable = Closable,
-            //Backdrop = Backdrop ? "dynamic" : "static",
             Placement = DialogPlacement switch
             {
                 DialogPlacement.TopCenter => "top-center",
