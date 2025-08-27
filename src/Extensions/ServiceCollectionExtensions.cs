@@ -7,7 +7,6 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddBlazorFlow(this IServiceCollection services)
     {
-        services.AddScoped<IFlowbiteService, FlowbiteService>();
         services.AddScoped<IDrawerService, DrawerService>();
         services.AddScoped<IDialogService, DialogService>();
         services.AddScoped<IToastService, ToastService>();

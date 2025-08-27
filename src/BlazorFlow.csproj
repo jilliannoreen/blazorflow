@@ -10,8 +10,8 @@
 		<Authors>Jillian Noreen</Authors>
 		<Company>Jillian Noreen</Company>
 		<Product>BlazorFlow</Product>
-		<Description>Flowbite + Tailwind CSS Blazor component library.</Description>
-		<PackageTags>blazor tailwind flowbite components ui</PackageTags>
+		<Description>Tailwind CSS Blazor component library.</Description>
+		<PackageTags>blazor tailwind components ui</PackageTags>
 		<RepositoryUrl>https://github.com/jilliannoreen/BlazorFlow</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/jilliannoreen/BlazorFlow</PackageProjectUrl>
 		<RepositoryType>git</RepositoryType>

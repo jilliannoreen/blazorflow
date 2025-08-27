@@ -220,7 +220,7 @@ public partial class InputField : ComponentBase, IDisposable
             if (Immediate)
             {
                 // Debounce for 300ms. Adjust as needed.
-                await JSRuntime.InvokeVoidAsync("flowbiteBlazorInterop.input.setupInputDebounce", _dotNetRef, _inputElementRef, nameof(HandleDebouncedInputFromJs), 300);
+                await JSRuntime.InvokeVoidAsync("blazorFlowInterop.input.setupInputDebounce", _dotNetRef, _inputElementRef, nameof(HandleDebouncedInputFromJs), 300);
             }
         }
     }

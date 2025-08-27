@@ -48,32 +48,32 @@ public class DialogService : IDialogService
     public async Task InitAsync(string id, DialogOptions options, DotNetObjectReference<Dialog> dotNetRef)
     {
         // Initializes the dialog via JavaScript interop (e.g., attaches event listeners).
-        await _js.InvokeVoidAsync("flowbiteBlazorInterop.dialog.init", id, options, dotNetRef);
+        await _js.InvokeVoidAsync("blazorFlowInterop.dialog.init", id, options, dotNetRef);
     }
     
     /// <inheritdoc />
     public async Task ShowAsync(string id)
     {
         // Shows the dialog identified by the given ID.
-        await _js.InvokeVoidAsync("flowbiteBlazorInterop.dialog.show", id);
+        await _js.InvokeVoidAsync("blazorFlowInterop.dialog.show", id);
     }
     /// <inheritdoc />
     public async Task HideAsync(string id)
     {
         // Hides the dialog identified by the given ID.
-        await _js.InvokeVoidAsync("flowbiteBlazorInterop.dialog.hide", id);
+        await _js.InvokeVoidAsync("blazorFlowInterop.dialog.hide", id);
     }
     /// <inheritdoc />
     public async Task ToggleAsync(string id)
     {
         // Toggles the visibility of the dialog.
-        await _js.InvokeVoidAsync("flowbiteBlazorInterop.dialog.toggle", id);
+        await _js.InvokeVoidAsync("blazorFlowInterop.dialog.toggle", id);
     }
     /// <inheritdoc />
     public async Task<bool> IsVisibleAsync(string id)
     {
         // Checks if the dialog is currently visible.
-        return await _js.InvokeAsync<bool>("flowbiteBlazorInterop.dialog.isVisible", id);
+        return await _js.InvokeAsync<bool>("blazorFlowInterop.dialog.isVisible", id);
     }
     /// <inheritdoc/>
     public async Task<DialogReference> ShowAsync<TDialog>(

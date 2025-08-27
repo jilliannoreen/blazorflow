@@ -117,7 +117,7 @@ public partial class Dialog : ComponentBase, IAsyncDisposable
         var options = new DialogOptions
         {
             Closable = Closable,
-            Backdrop = Backdrop ? "dynamic" : "static",
+            //Backdrop = Backdrop ? "dynamic" : "static",
             Placement = DialogPlacement switch
             {
                 DialogPlacement.TopCenter => "top-center",
@@ -206,14 +206,8 @@ public class DialogOptions
     /// <summary>Specifies the modal placement (e.g., center-center).</summary>
     public string Placement { get; set; } = "center-center";
 
-    /// <summary>Controls the behavior of the backdrop (e.g., static or dynamic).</summary>
-    public string Backdrop { get; set; } = "static";
-
     /// <summary>Determines if the modal is closable via UI controls.</summary>
     public bool Closable { get; set; } = false;
-
-    /// <summary>Custom CSS classes for the modal backdrop.</summary>
-    public string BackdropClasses { get; set; } = "bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-40";
 }
 
 /// <summary>

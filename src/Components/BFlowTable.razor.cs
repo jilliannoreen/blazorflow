@@ -45,7 +45,7 @@ public partial class BFlowTable<TItem, TRequest> : ComponentBase
     private const int RowHeight = 58;
 
     private string TableRowClass => ClassBuilder
-        .Default("odd:bg-gray-50 even:bg-white hover:bg-blue-50")
+        .Default("focus:outline-none odd:bg-gray-50 even:bg-white hover:bg-blue-50")
         .AddClass("cursor-pointer", OnRowClick.HasDelegate)
         .AddClass(RowClass)
         .Build();
@@ -55,13 +55,18 @@ public partial class BFlowTable<TItem, TRequest> : ComponentBase
         .AddClass(HeaderClass)
         .Build();
 
+    private string TableClass => ClassBuilder
+        .Default("w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400")
+        .AddClass("!h-[calc(100%-70px]", _isEmpty)
+        .Build();
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && _firstLoad)
         {
             // Estimate how many rows to display based on container height
             var estimatedRowCount = await JSRuntime.InvokeAsync<int>(
-                "flowbiteBlazorInterop.table.getAvailableRowCount",
+                "blazorFlowInterop.table.getAvailableRowCount",
                 CancellationToken.None,
                 [_tableContainer, RowHeight ]
             );
