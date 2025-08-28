@@ -1,0 +1,150 @@
+@using BlazorFlow.Utilities
+<div class="relative w-64">
+    <InputField Value="@DisplayRange"
+                ReadOnly="true"
+                Icon="@Icons.Icons.Outlined.Calendar"
+                IconClass="!text-gray-700"
+                VisualPlacement="VisualPlacement.End"
+                @onclick="ToggleCalendar" />
+
+
+    @if (ShowCalendar)
+    {
+        <div class="absolute bg-white border rounded shadow p-4 mt-2 z-50">
+            <div class="flex space-x-4">
+                <!-- Left Month -->
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <button @onclick="PreviousMonth">‹</button>
+                        <span>@LeftMonth.ToString("MMMM yyyy")</span>
+                        <button @onclick="NextMonth">›</button>
+                    </div>
+                    <table class="text-center">
+                        <thead>
+                            <tr>
+                                @foreach (var day in DaysOfWeek)
+                                {
+                                    <th class="text-xs font-normal min-w-10 min-h-10">@day</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var week in GetWeeks(LeftMonth))
+                            {
+                                <tr>
+                                    @foreach (var day in week)
+                                    {
+                                        <td class="min-w-10 min-h-10 text-center text-sm font-normal cursor-pointer @GetDayClasses(day)" @onclick="() => SelectDate(day)">
+                                            @if (day.HasValue)
+                                            {
+                                                @day.Value.Day
+                                            }
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Right Month -->
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <button @onclick="PreviousMonth">‹</button>
+                        <span>@RightMonth.ToString("MMMM yyyy")</span>
+                        <button @onclick="NextMonth">›</button>
+                    </div>
+                    <table class="text-center">
+                        <thead>
+                        <tr>
+                            @foreach (var day in DaysOfWeek)
+                            {
+                                <th class="text-xs font-normal min-w-10 min-h-10">@day</th>
+                            }
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var week in GetWeeks(RightMonth))
+                        {
+                            <tr>
+                                @foreach (var day in week)
+                                {
+                                    <td class="min-w-10 min-h-10 text-center text-sm font-normal cursor-pointer @GetDayClasses(day)" @onclick="() => SelectDate(day)">
+                                        @if (day.HasValue)
+                                        {
+                                            @day.Value.Day
+                                        }
+                                    </td>
+                                }
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public DateTime? StartDate { get; set; }
+    [Parameter] public DateTime? EndDate { get; set; }
+    [Parameter] public EventCallback<(DateTime?, DateTime?)> OnRangeChanged { get; set; }
+
+    private bool ShowCalendar = false;
+    private string DisplayRange =>
+        StartDate.HasValue && EndDate.HasValue
+            ? $"{StartDate:MM/dd/yyyy} - {EndDate:MM/dd/yyyy}"
+            : "";
+
+    private void ToggleCalendar() => ShowCalendar = !ShowCalendar;
+    
+    private DateTime LeftMonth = DateTime.Today;
+    
+    private DateTime RightMonth => LeftMonth.AddMonths(1);
+
+    private string[] DaysOfWeek = new[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+
+    private IEnumerable<IEnumerable<DateTime?>> GetWeeks(DateTime month)
+    {
+        var firstDay = new DateTime(month.Year, month.Month, 1);
+        var start = firstDay.AddDays(-(int)firstDay.DayOfWeek);
+        var end = firstDay.AddMonths(1).AddDays(-1);
+
+        for (int week = 0; week < 6; week++)
+        {
+            yield return Enumerable.Range(0, 7).Select(i =>
+            {
+                var day = start.AddDays(week * 7 + i);
+                return (day.Month == month.Month) ? day : (DateTime?)null;
+            });
+        }
+    }
+
+    private void PreviousMonth() => LeftMonth = LeftMonth.AddMonths(-1);
+    
+    private void NextMonth() => LeftMonth = LeftMonth.AddMonths(1);
+
+    private void SelectDate(DateTime? day)
+    {
+        if (StartDate == null || (StartDate != null && EndDate != null))
+        {
+            StartDate = day;
+            EndDate = null;
+        }
+        else if (EndDate == null)
+        {
+            if (day < StartDate) (StartDate, EndDate) = (day, StartDate);
+            else EndDate = day;
+        }
+    }
+
+    private string GetDayClasses(DateTime? day) => ClassBuilder
+        .Default("")
+        .AddClass("bg-(--primary) text-(--primary-foreground)",(StartDate == day && StartDate != null) || (EndDate == day && EndDate != null))
+        .AddClass("rounded-l-lg",StartDate == day)
+        .AddClass("rounded-r-lg",EndDate == day)
+        .AddClass("bg-(--primary)/25",StartDate != null && EndDate != null && day > StartDate && day < EndDate)
+        .AddClass("hover:bg-(--primary)/25",StartDate != null && day > StartDate)
+        .Build();
+}

@@ -1,0 +1,12 @@
+<button type="@Type.ToString().ToLower()"
+        class="@ButtonClass"
+        disabled="@Disabled"
+        @onclick="HandleClick"
+        @attributes="AdditionalAttributes">
+
+    <!--Optional icon at the start-->  
+    @if (!string.IsNullOrWhiteSpace(Icon))
+    {
+        <Icon SvgIcon="@Icon" Size="@IconSize"/>
+    }
+</button>

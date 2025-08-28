@@ -15,6 +15,7 @@ public partial class BFlowTable<TItem, TRequest> : ComponentBase
     [Parameter] public RenderFragment EmptyState { get; set; }
     [Parameter] public string RowClass { get; set; }
     [Parameter] public string HeaderClass { get; set; }
+    [Parameter] public string Class { get; set; }
 
     [Parameter] public required Func<TRequest, Task<TableResponse<TItem>>> LoadData { get; set; }
     [Parameter] public required Func<TableRequestParams, TRequest> BuildRequest { get; set; }
@@ -58,6 +59,7 @@ public partial class BFlowTable<TItem, TRequest> : ComponentBase
     private string TableClass => ClassBuilder
         .Default("w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400")
         .AddClass("!h-[calc(100%-70px]", _isEmpty)
+        .AddClass(Class)
         .Build();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

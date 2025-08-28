@@ -331,7 +331,7 @@ public partial class InputField : ComponentBase, IDisposable
     private string GetIconClass => ClassBuilder
         .Default("absolute top-1/2 -translate-y-1/2")
         .AddClass(VisualPlacement == VisualPlacement.Start ? "left-4" : "right-4")
-        .AddClass(HasError ? "text-red-600" : "text-gray-400")
+        .AddClass(HasError ? "text-red-600" : "text-gray-700")
         .Build();
     
     /// <summary>
@@ -357,7 +357,7 @@ public partial class InputField : ComponentBase, IDisposable
         .AddClass("bg-gray-100 text-gray-500 cursor-default", ReadOnly && !Disabled && !ValidationMessages.Any())
         .AddClass(GetClassByVariantSize(
             hasStartIcon: VisualPlacement == VisualPlacement.Start, 
-            hasEndIcon: VisualPlacement == VisualPlacement.End, 
+            hasEndIcon: VisualPlacement == VisualPlacement.End || HasError, 
             hasLabel: !string.IsNullOrWhiteSpace(Label))) // ⬅ handles padding/bg/font
         .Build();
 
