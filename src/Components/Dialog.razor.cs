@@ -141,10 +141,14 @@ public partial class Dialog : ComponentBase, IAsyncDisposable
     /// </summary>
     public async Task ShowAsync()
     {
-        _isVisible = true;             
+        _isShowingAnimation = true; // Start fade-in
         StateHasChanged();              
-
-        await Task.Yield();     
+        
+        await Task.Yield();
+        
+        _isVisible = true;      
+        StateHasChanged();    
+        
         await ReInitAsync();            
         await DialogInterop.ShowAsync(Id);  
     }
@@ -154,10 +158,16 @@ public partial class Dialog : ComponentBase, IAsyncDisposable
     /// </summary>
     public async Task HideAsync()
     {
-        await DialogInterop.HideAsync(Id);
-
-        _isVisible = false;
+        _isShowingAnimation = false; // Trigger fade-out
         StateHasChanged();
+
+        // Wait for CSS animation duration (e.g., 300ms)
+        await Task.Delay(300);
+
+        _isVisible = false; // Remove from DOM after animation
+        StateHasChanged();
+
+        await DialogInterop.HideAsync(Id);
     }
     
     #endregion
@@ -180,7 +190,8 @@ public partial class Dialog : ComponentBase, IAsyncDisposable
     private string Id { get; } = $"dialog-{Guid.NewGuid()}";
 
     private string DialogClass => ClassBuilder
-        .Default("overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-full max-h-full")
+        .Default("hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-full max-h-full transition-all duration-200 ease-in-out")
+        .AddClass(_isShowingAnimation ? "opacity-100 scale-100" : "opacity-0 scale-95") 
         .AddClass(Class)
         .Build();
     
@@ -204,7 +215,6 @@ public class DialogOptions
 {
     /// <summary>Specifies the modal placement (e.g., center-center).</summary>
     public string Placement { get; set; } = "center-center";
-
     /// <summary>Determines if the modal is closable via UI controls.</summary>
     public bool Closable { get; set; } = false;
 }

@@ -107,6 +107,7 @@ public partial class BFlowTable<TItem, TRequest> : ComponentBase
             
         _isLoading = false;
         _firstLoad = false;
+        StateHasChanged();
     }
 
     /// <summary>

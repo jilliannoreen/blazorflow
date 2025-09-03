@@ -255,7 +255,7 @@ window.blazorFlowInterop.dialog = (function () {
 
     const defaultOptions = {
         placement: "center",
-        backdropClasses: "bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0",
+        backdropClasses: "fixed inset-0 bg-gray-900/50 transition-opacity duration-300 opacity-0",
         backdrop: "dynamic",
         closable: true
     };
@@ -282,12 +282,17 @@ window.blazorFlowInterop.dialog = (function () {
         backdrop.style.zIndex = zIndex;
         backdrop.dataset.modalBackdrop = modalId;
         document.body.appendChild(backdrop);
+        // Trigger fade-in after DOM insertion
+        requestAnimationFrame(() => backdrop.classList.add("opacity-100"));
         return backdrop;
     }
 
     function removeBackdrop(modalId) {
         const backdrop = document.querySelector(`[data-modal-backdrop="${modalId}"]`);
-        if (backdrop) backdrop.remove();
+        if (backdrop) {
+            backdrop.classList.remove("opacity-100"); // fade out
+            setTimeout(() => backdrop.remove(), 300); // match duration-300
+        }
     }
 
     return {
@@ -316,8 +321,8 @@ window.blazorFlowInterop.dialog = (function () {
                         placementClasses.forEach(cls => this.el.classList.add(cls));
 
                         // Show modal
-                        this.el.classList.add("flex");
                         this.el.classList.remove("hidden");
+                        this.el.classList.add("flex", "opacity-0"); // start transparent
                         this.el.style.zIndex = currentZ + 1;
                         this.el.setAttribute("aria-modal", "true");
                         this.el.setAttribute("role", "dialog");
@@ -333,6 +338,14 @@ window.blazorFlowInterop.dialog = (function () {
                         if (Object.values(modals).filter(m => !m.isHidden).length === 0) {
                             document.body.classList.add("overflow-hidden");
                         }
+
+                        // Animate fade-in for modal
+                        requestAnimationFrame(() => {
+                            this.el.classList.add("opacity-100");
+                            this.el.classList.remove("opacity-0");
+                        });
+
+                        this.isHidden = false;
 
                         this.isHidden = false;
                         if (dotNetHelper) dotNetHelper.invokeMethodAsync("OnShow");
@@ -441,3 +454,6 @@ window.blazorFlowInterop.table = {
         return availableRows > 1 ? availableRows : 1;
     }
 };
+
+
+

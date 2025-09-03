@@ -9,7 +9,7 @@ namespace BlazorFlow.Components
         [Parameter] public RenderFragment ChildContent { get; set; }
 
         private string TableHeaderClass => ClassBuilder
-            .Default("font-bold text-center px-6 py-3 first:rounded-s-lg last:rounded-e-lg")
+            .Default("font-semibold text-center px-6 py-3 first:rounded-s-lg last:rounded-e-lg")
             .AddClass(Class)
             .Build();
     }

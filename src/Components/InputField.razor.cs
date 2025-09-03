@@ -155,7 +155,7 @@ public partial class InputField : ComponentBase, IDisposable
     /// <summary>
     /// The unique identifier for the input element.
     /// </summary>
-    private string Id { get; } = $"input-{Guid.NewGuid()}";
+    [Parameter] public string Id { get; set; } = $"input-{Guid.NewGuid()}";
     /// <summary>
     /// Determines whether the input field should display an error state.
     /// Returns <c>true</c> if a custom error message is provided via <see cref="ErrorText"/>
@@ -494,7 +494,7 @@ public partial class InputField : ComponentBase, IDisposable
                 Size.Large => "pl-11",
                 _ => "pl-10"
             }
-            : string.Empty;
+            : "pl-5";
 
         var iconPaddingEnd = hasEndIcon
             ? IconSize switch
@@ -503,7 +503,7 @@ public partial class InputField : ComponentBase, IDisposable
                 Size.Large => "pr-11",
                 _ => "pr-10"
             }
-            : string.Empty;
+            : "pr-5";
 
         // Vertical padding (merged top and bottom)
         string verticalPadding = Variant switch
