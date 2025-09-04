@@ -255,7 +255,7 @@ window.blazorFlowInterop.dialog = (function () {
 
     const defaultOptions = {
         placement: "center",
-        backdropClasses: "fixed inset-0 bg-gray-900/50 transition-opacity duration-300 opacity-0",
+        backdropClasses: "fixed inset-0 bg-gray-900/50 transition-opacity duration-100 opacity-0",
         backdrop: "dynamic",
         closable: true
     };
@@ -291,7 +291,7 @@ window.blazorFlowInterop.dialog = (function () {
         const backdrop = document.querySelector(`[data-modal-backdrop="${modalId}"]`);
         if (backdrop) {
             backdrop.classList.remove("opacity-100"); // fade out
-            setTimeout(() => backdrop.remove(), 300); // match duration-300
+            setTimeout(() => backdrop.remove(), 100); // match duration-300
         }
     }
 

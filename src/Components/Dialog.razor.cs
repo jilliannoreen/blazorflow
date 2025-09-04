@@ -161,8 +161,8 @@ public partial class Dialog : ComponentBase, IAsyncDisposable
         _isShowingAnimation = false; // Trigger fade-out
         StateHasChanged();
 
-        // Wait for CSS animation duration (e.g., 300ms)
-        await Task.Delay(300);
+        // Wait for CSS animation duration 
+        await Task.Delay(100);
 
         _isVisible = false; // Remove from DOM after animation
         StateHasChanged();
@@ -190,7 +190,7 @@ public partial class Dialog : ComponentBase, IAsyncDisposable
     private string Id { get; } = $"dialog-{Guid.NewGuid()}";
 
     private string DialogClass => ClassBuilder
-        .Default("hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-full max-h-full transition-all duration-200 ease-in-out")
+        .Default("hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-full max-h-full transition-all duration-100 ease-in-out")
         .AddClass(_isShowingAnimation ? "opacity-100 scale-100" : "opacity-0 scale-95") 
         .AddClass(Class)
         .Build();
