@@ -260,6 +260,23 @@ window.blazorFlowInterop.dialog = (function () {
         closable: true
     };
 
+    /** Wait for CSS transition to end */
+    function waitForTransitionEnd(element, timeout = 300) {
+        return new Promise((resolve) => {
+            let resolved = false;
+
+            const handler = () => {
+                if (resolved) return;
+                resolved = true;
+                element.removeEventListener("transitionend", handler);
+                resolve();
+            };
+
+            element.addEventListener("transitionend", handler, { once: true });
+            setTimeout(handler, timeout + 50); // Fallback safety
+        });
+    }
+
     /** Returns placement-specific flex classes for modal container */
     function getPlacementClasses(placement) {
         switch (placement) {
@@ -276,22 +293,26 @@ window.blazorFlowInterop.dialog = (function () {
         }
     }
 
+    /** Create backdrop element */
     function createBackdrop(modalId, classes, zIndex) {
         const backdrop = document.createElement("div");
         backdrop.className = classes;
         backdrop.style.zIndex = zIndex;
         backdrop.dataset.modalBackdrop = modalId;
         document.body.appendChild(backdrop);
-        // Trigger fade-in after DOM insertion
+
+        // Animate fade-in
         requestAnimationFrame(() => backdrop.classList.add("opacity-100"));
         return backdrop;
     }
 
-    function removeBackdrop(modalId) {
+    /** Remove backdrop element */
+    async function removeBackdrop(modalId) {
         const backdrop = document.querySelector(`[data-modal-backdrop="${modalId}"]`);
         if (backdrop) {
             backdrop.classList.remove("opacity-100"); // fade out
-            setTimeout(() => backdrop.remove(), 100); // match duration-300
+            await waitForTransitionEnd(backdrop, 100);
+            backdrop.remove();
         }
     }
 
@@ -311,7 +332,9 @@ window.blazorFlowInterop.dialog = (function () {
                     options: modalOptions,
                     isHidden: true,
                     backdropEl: null,
-                    show: function () {
+
+                    /** Show modal with fade-in */
+                    async show() {
                         if (!this.isHidden) return;
 
                         const currentZ = zIndexBase + Object.keys(modals).length * 10;
@@ -320,15 +343,15 @@ window.blazorFlowInterop.dialog = (function () {
                         const placementClasses = getPlacementClasses(this.options.placement);
                         placementClasses.forEach(cls => this.el.classList.add(cls));
 
-                        // Show modal
+                        // Initial state
                         this.el.classList.remove("hidden");
-                        this.el.classList.add("flex", "opacity-0"); // start transparent
+                        this.el.classList.add("flex", "opacity-0");
                         this.el.style.zIndex = currentZ + 1;
                         this.el.setAttribute("aria-modal", "true");
                         this.el.setAttribute("role", "dialog");
                         this.el.removeAttribute("aria-hidden");
 
-                        // Create backdrop
+                        // Backdrop
                         this.backdropEl = createBackdrop(id, this.options.backdropClasses, currentZ);
                         if (this.options.backdrop === "dynamic" && this.options.closable) {
                             this.backdropEl.addEventListener("click", () => this.hide());
@@ -339,19 +362,26 @@ window.blazorFlowInterop.dialog = (function () {
                             document.body.classList.add("overflow-hidden");
                         }
 
-                        // Animate fade-in for modal
+                        // Animate modal fade-in
                         requestAnimationFrame(() => {
                             this.el.classList.add("opacity-100");
                             this.el.classList.remove("opacity-0");
                         });
 
+                        await waitForTransitionEnd(this.el, 100);
                         this.isHidden = false;
 
-                        this.isHidden = false;
                         if (dotNetHelper) dotNetHelper.invokeMethodAsync("OnShow");
                     },
-                    hide: function () {
+
+                    /** Hide modal with fade-out */
+                    async hide() {
                         if (this.isHidden) return;
+
+                        this.el.classList.remove("opacity-100");
+                        this.el.classList.add("opacity-0");
+
+                        await waitForTransitionEnd(this.el, 100);
 
                         this.el.classList.add("hidden");
                         this.el.classList.remove("flex");
@@ -359,7 +389,7 @@ window.blazorFlowInterop.dialog = (function () {
                         this.el.removeAttribute("aria-modal");
                         this.el.removeAttribute("role");
 
-                        removeBackdrop(id);
+                        await removeBackdrop(id);
 
                         if (Object.values(modals).filter(m => !m.isHidden).length === 1) {
                             document.body.classList.remove("overflow-hidden");
@@ -368,13 +398,13 @@ window.blazorFlowInterop.dialog = (function () {
                         this.isHidden = true;
                         if (dotNetHelper) dotNetHelper.invokeMethodAsync("OnHide");
                     },
-                    toggle: function () {
+
+                    toggle() {
                         this.isHidden ? this.show() : this.hide();
                         if (dotNetHelper) dotNetHelper.invokeMethodAsync("OnToggle");
                     },
-                    isVisible: function () {
-                        return !this.isHidden;
-                    }
+
+                    isVisible() { return !this.isHidden; }
                 };
 
                 modals[id] = modal;

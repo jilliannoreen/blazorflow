@@ -57,6 +57,7 @@ public partial class Icon
         .Default(string.Empty)
         .AddClass(Size switch
         {
+            Size.ExtraSmall => "size-3.5",
             Size.Small => "size-4.5",
             Size.Large => "size-6",
             _ => "size-5"

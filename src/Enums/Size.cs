@@ -10,6 +10,9 @@ public enum Size
     /// <summary>
     /// The smallest size.
     /// </summary>
+    [Description("Extra Small")]
+    ExtraSmall,
+    
     [Description("small")]
     Small,
 

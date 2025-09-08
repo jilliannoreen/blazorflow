@@ -12,6 +12,7 @@ namespace BlazorFlow.Components;
 public partial class Dialog : ComponentBase, IAsyncDisposable 
 {
     [Inject] private IDialogService DialogInterop { get; set; }
+    [Inject] private IJSRuntime JSRuntime { get; set; }
     
     #region Parameters
 
@@ -141,16 +142,12 @@ public partial class Dialog : ComponentBase, IAsyncDisposable
     /// </summary>
     public async Task ShowAsync()
     {
-        _isShowingAnimation = true; // Start fade-in
-        StateHasChanged();              
-        
-        await Task.Yield();
-        
-        _isVisible = true;      
-        StateHasChanged();    
-        
-        await ReInitAsync();            
-        await DialogInterop.ShowAsync(Id);  
+        _isVisible = true;
+        _isShowingAnimation = true; // fade-in
+        StateHasChanged();
+
+        await ReInitAsync();
+        await DialogInterop.ShowAsync(Id);
     }
 
     /// <summary>
@@ -161,15 +158,11 @@ public partial class Dialog : ComponentBase, IAsyncDisposable
         _isShowingAnimation = false; // Trigger fade-out
         StateHasChanged();
 
-        // Wait for CSS animation duration 
-        await Task.Delay(100);
-
+        await DialogInterop.HideAsync(Id);
+        
         _isVisible = false; // Remove from DOM after animation
         StateHasChanged();
-
-        await DialogInterop.HideAsync(Id);
     }
-    
     #endregion
 
     #region Private Methods
