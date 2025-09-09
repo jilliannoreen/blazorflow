@@ -1,6 +1,7 @@
 using BlazorFlow.Enums;
 using BlazorFlow.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Routing;
 
 namespace BlazorFlow.Components;
 
@@ -10,6 +11,7 @@ namespace BlazorFlow.Components;
 /// </summary>
 public partial class DrawerProvider : ComponentBase, IDisposable
 {
+    [Inject] NavigationManager NavigationManager { get; set; } = null!;
     /// <summary>
     /// Injected DrawerService used to subscribe to show/hide events.
     /// </summary>
@@ -56,8 +58,16 @@ public partial class DrawerProvider : ComponentBase, IDisposable
     /// </summary>
     protected override void OnInitialized()
     {
+        NavigationManager.LocationChanged += OnLocationChanged;
         DrawerService.OnShowRequested += ShowDrawerAsync;
         DrawerService.OnHideRequested += HideDrawerAsync;
+    }
+    
+    private async  void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        // Close any open drawer when navigation occurs
+        await HideDrawerAsync();
+        StateHasChanged();
     }
 
     /// <summary>

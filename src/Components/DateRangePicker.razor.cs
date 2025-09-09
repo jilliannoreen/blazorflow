@@ -28,16 +28,17 @@ public partial class DateRangePicker : ComponentBase
 
     private async Task ToggleCalendar()
     {
-        ShowCalendar = !ShowCalendar;
-        if (ShowCalendar)
+        if (!ShowCalendar)
         {
             var viewportWidth = await JsRuntime.InvokeAsync<double>("eval", "window.innerWidth");
             var viewportHeight = await JsRuntime.InvokeAsync<double>("eval", "window.innerHeight");
-
             var rect = await JsRuntime.InvokeAsync<BoundingRect>("eval", $"document.querySelector('#{TriggerId}').getBoundingClientRect()");
+
             OpenUpwards = (viewportHeight - rect.Bottom) < 300;
             AlignRight = (viewportWidth - rect.Right) < 350;
+            ShowCalendar = true; 
         }
+        else ShowCalendar = false;
     }
     
     private string CalendarPositionClass => ClassBuilder
