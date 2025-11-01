@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using BlazorFlow.Enums;
+using BlazorFlow.Services;
 using BlazorFlow.Utilities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -8,6 +9,7 @@ namespace BlazorFlow.Components;
 
 public partial class Switch<TValue>
 {
+    [Inject] private ColorService ColorService { get; set; }
     [CascadingParameter] private EditContext? EditContext { get; set; }
     [Parameter] public bool Value { get; set; }
     [Parameter] public EventCallback<bool> ValueChanged { get; set; }
@@ -31,8 +33,8 @@ public partial class Switch<TValue>
         .Default("relative w-11 h-6 rounded-full peer-focus:outline-none transition-colors duration-300 after:content-[''] " +
                  "after:absolute after:top-0.5 after:start-[2px] after:bg-white after:rounded-full " +
                  "after:h-5 after:w-5 after:transition-all rtl:peer-checked:after:-translate-x-full")
-        .AddClass($"bg-(--error)", !IsChecked)
-        .AddClass($"bg-(--success)", IsChecked)
+        .AddClass(ColorService.GetTailwindClass(UncheckedColor, ColorContext.Background), !IsChecked)
+        .AddClass(ColorService.GetTailwindClass(CheckedColor, ColorContext.Background), IsChecked)
         .AddClass("peer-checked:after:translate-x-full")
         .Build();
 

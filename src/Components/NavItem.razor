@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Components.Routing
 
 <li class="mb-1">
-    @if (ChildContent is not null)
+    @if (HasChildContent())
     {
         <div 
             role="button" 
@@ -23,14 +23,19 @@
                 <span class="@NavItemVisibilityClass">@Label</span>
             </div>
             
-            <span class="text-gray-600 transition-transform duration-200 @NavItemVisibilityClass @ArrowRotation">
-                <Icon 
-                    SvgIcon="@Icons.Outlined.ChevronRight" 
-                    Size="Size.Large" 
-                    fill="none"/>
-            </span>
+            <div class="flex items-center gap-1 @NavItemVisibilityClass ">
+                @Indicator
+                <div class="text-gray-600 transition-transform duration-200 @ArrowRotation">
+                    <Icon
+                        SvgIcon="@Icons.Outlined.ChevronRight"
+                        Size="Size.Large"
+                        fill="none"/>
+                </div>
+            </div>
         </div>
-
+        
+        
+        
         @if (IsExpanded && !IsCollapsed)
         {
             <ul class="ml-6 mt-1 space-y-1 transition-all duration-300" role="group">
@@ -40,21 +45,27 @@
     }
     else
     {
-        <NavLink 
-            class="@NavItemClass" 
-            href="@Href" 
-            Match="@Match" 
-            ActiveClass="!text-gray-800 !bg-(--secondary) font-medium" 
-            aria-label="@Label" 
+        <NavLink
+            class="@NavItemClass"
+            href="@ResolvedHref"
+            @onclick="@HandleClick"
+            Match="@ResolvedMatch"
+            ActiveClass="@ActiveClass"
+            aria-label="@Label"
             role="link">
-            @if (!string.IsNullOrWhiteSpace(Icon))
-            {
-                <Icon 
-                    SvgIcon="@Icon" 
-                    Size="Size.Large" 
-                    fill="none"/>
-            }
-            <span class="@NavItemVisibilityClass">@Label</span>
+            <div class="@NavItemContentClass">
+                @if (!string.IsNullOrWhiteSpace(Icon))
+                {
+                    <Icon
+                        SvgIcon="@Icon"
+                        Size="Size.Large"
+                        fill="none"/>
+                }
+                <span class="@NavItemVisibilityClass">@Label</span>
+            </div>
+            
+            @Indicator
+            
         </NavLink>
     }
 </li>

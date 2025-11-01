@@ -11,8 +11,7 @@ public partial class Drawer : ComponentBase
     /// <summary>
     /// Specifies the size of the drawer (width for left/right, height for top/bottom).
     /// </summary>
-    [Parameter]
-    public DrawerSize Size { get; set; } = DrawerSize.Medium;
+    [Parameter] public DrawerSize Size { get; set; } = DrawerSize.Medium;
     /// <summary>
     /// Content to be rendered inside the drawer.
     /// </summary>
@@ -42,6 +41,7 @@ public partial class Drawer : ComponentBase
     /// Set to <c>true</c> to allow scrolling; <c>false</c> to lock scroll (recommended for modal-like drawers).
     /// </summary>
     [Parameter] public bool BodyScrolling { get; set; } = false;
+    [Parameter] public string Class { get; set; } 
     
     
     /// <summary>
@@ -52,6 +52,8 @@ public partial class Drawer : ComponentBase
     /// The ID used for the drawer's ARIA label.
     /// </summary>
     private string LabelId => $"{Id}-label";
+    
+    [Parameter] public bool Rounded { get; set; } 
     /// <summary>
     /// Returns the appropriate Tailwind CSS class that sets the drawer's size
     /// based on the selected <see cref="DrawerSize"/> and <see cref="DrawerPosition"/>.
@@ -78,10 +80,10 @@ public partial class Drawer : ComponentBase
             DrawerPosition.Top or DrawerPosition.Bottom => Size switch
             {
                 DrawerSize.Half => "h-1/2",
-                DrawerSize.Small => "h-full sm:h-32",
-                DrawerSize.Medium => "h-full sm:h-64",
-                DrawerSize.Large => "h-full sm:h-80",
-                DrawerSize.ExtraLarge => "h-full sm:h-[28rem]",
+                DrawerSize.Small => "h-full sm:h-1/3",
+                DrawerSize.Medium => "h-full sm:h-1/2",
+                DrawerSize.Large => "h-full sm:h-3/4",
+                DrawerSize.ExtraLarge => "h-full sm:h-9/10",
                 DrawerSize.Full => "h-full",
                 _ => "h-full sm:h-64"
             },
@@ -104,14 +106,31 @@ public partial class Drawer : ComponentBase
             _ => string.Empty
         };
     }
+    
+    private string GetRoundedClass()
+    {
+        if (!Rounded)
+            return string.Empty;
+        
+        return Position switch
+        {
+            DrawerPosition.Left => "rounded-r-2xl",
+            DrawerPosition.Right => "rounded-l-2xl",
+            DrawerPosition.Top => "rounded-b-2xl",
+            DrawerPosition.Bottom => "rounded-t-2xl",
+            _ => string.Empty
+        };
+    }
 
     /// <summary>
     /// Builds the full Tailwind class string for the drawer element.
     /// </summary>
     private string DrawerClass => ClassBuilder
-        .Default("fixed z-40 overflow-y-auto transition-transform p-6 bg-(--foreground)")
+        .Default("fixed z-40 overflow-y-auto transition-transform bg-(--foreground)")
         .AddClass(GetPositionClass())
+        .AddClass(GetRoundedClass())
         .AddClass(GetSizeClass())
+        .AddClass(Class)
         .Build();
 
     /// <summary>
@@ -140,7 +159,7 @@ public partial class Drawer : ComponentBase
             BodyScrolling = BodyScrolling,
             Edge = Edge
         };
-
+        
         await DrawerInterop.InitAsync(Id, options);
     }
 

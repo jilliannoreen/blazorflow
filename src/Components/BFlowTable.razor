@@ -8,7 +8,7 @@
      aria-label="Data table container">
 
     <table class="@TableClass" aria-rowcount="@_items?.Count()">
-        <thead class="@TableHeaderClass">
+        <thead @ref="_tableHeader" class="@TableHeaderClass">
             <tr>
                 @HeaderTemplate
             </tr>

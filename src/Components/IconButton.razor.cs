@@ -60,12 +60,14 @@ public partial class IconButton
     {
         return Size switch
         {
-            ButtonSize.ExtraSmall => "px-2 py-2 text-xs",
-            ButtonSize.Small => "px-2 py-2 text-sm",
-            ButtonSize.Base => "px-2.5 py-2.5 text-sm",
-            ButtonSize.Large => "px-3 py-3 text-base",
-            ButtonSize.ExtraLarge => "px-3.5 py-3.5 text-base",
-            _ => "px-2.5 py-2.5 text-sm"
+            ButtonSize.ExtraSmall => "px-2 py-2 text-xs size-[32px]",
+            ButtonSize.Small => "px-2 py-2 text-sm size-[36px]",
+            ButtonSize.Base => "px-2.5 py-2.5 text-sm size-[40px]",
+            ButtonSize.Large => "px-3 py-3 text-base size-[44px]",
+            ButtonSize.ExtraLarge => "px-3.5 py-3.5 text-base size-[48px]",
+            _ => "px-2.5 py-2.5 text-sm size-[40px]"
+            
+            
         };
     }
     
@@ -76,7 +78,7 @@ public partial class IconButton
     {
         return Variant switch
         {
-            Variant.Filled => "text-white bg-gray-300",
+            Variant.Filled => "text-white bg-gray-200",
             Variant.Outlined => "text-gray-300 border-gray-300",
             _ => "text-gray-300"
         };

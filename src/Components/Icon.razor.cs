@@ -62,6 +62,15 @@ public partial class Icon
             Size.Large => "size-6",
             _ => "size-5"
         })
+        .AddClass(Color switch
+        {
+            Color.Error => "text-red-100",
+            Color.Info => "text-blue-100",
+            Color.Success => "text-green-100",
+            Color.Surface => "text-gray-100",
+            Color.Warning => "text-amber-400",
+            _ => ""
+        })
         .AddClass(Class)
         .Build();
 }

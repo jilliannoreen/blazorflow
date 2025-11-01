@@ -469,19 +469,24 @@ window.blazorFlowInterop.table = {
     /**
      * Calculates how many table rows can fit in a container based on estimated row height.
      * @param {HTMLElement} container - The element containing the table
-     * @param {number} rowHeight - Estimated height of a row in pixels (default: 40)
+     * @param {number} rowHeight - Estimated height of a row in pixels 
      * @returns {number} - Number of rows that can fit
      */
-    getAvailableRowCount: function (container, rowHeight = 40) {
+    getAvailableRowCount: function (container, header, offset = 0, rowHeight = 0) {
         if (!container) {
-            console.warn("[TableInterop] Container not found.");
+            console.warn("[TableInterop] Invalid container or height value.");
             return 1;
         }
-
-        const containerHeight = container.clientHeight;
-        const availableRows = Math.floor((containerHeight - 88) / rowHeight);
-
-        return availableRows > 1 ? availableRows : 1;
+        
+        const headerHeight = header.clientHeight;
+        const viewportHeight = window.innerHeight;
+        const containerHeight = viewportHeight - offset;
+        const availableRows = Math.floor((containerHeight - headerHeight - 40) / rowHeight);
+        
+        if (offset !== 0)
+            container.style.height = `${containerHeight}px`;
+        
+        return availableRows;
     }
 };
 

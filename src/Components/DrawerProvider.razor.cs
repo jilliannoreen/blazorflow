@@ -100,10 +100,6 @@ public partial class DrawerProvider : ComponentBase, IDisposable
     {
         if (_drawerRef is not null)
             await _drawerRef.Hide();
-
-        Title = string.Empty;
-        Body = null;
-        await InvokeAsync(StateHasChanged);
     }
 
     /// <summary>

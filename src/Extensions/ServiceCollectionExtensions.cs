@@ -1,3 +1,4 @@
+using System.Drawing;
 using BlazorFlow.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,6 +11,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IDrawerService, DrawerService>();
         services.AddScoped<IDialogService, DialogService>();
         services.AddScoped<IToastService, ToastService>();
+        services.AddScoped<ColorService>();
 
         return services;
     }

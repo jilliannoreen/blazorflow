@@ -8,7 +8,7 @@ using Microsoft.JSInterop;
 
 namespace BlazorFlow.Components;
 
-public partial class InputField : ComponentBase, IDisposable
+public partial class InputField<T> : ComponentBase, IDisposable
 {
     #region Parameters
 
@@ -20,7 +20,12 @@ public partial class InputField : ComponentBase, IDisposable
     /// <summary>
     /// Custom CSS class for the wrapper container.
     /// </summary>
-    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? WrapperClass { get; set; }
+    
+    /// <summary>
+    /// Custom CSS class for the input element.
+    /// </summary>
+    [Parameter] public string? InputElementClass { get; set; }
 
     /// <summary>
     /// The floating label text shown above the input.
@@ -89,22 +94,22 @@ public partial class InputField : ComponentBase, IDisposable
     /// <summary>
     /// The input's bound value.
     /// </summary>
-    [Parameter] public string? Value { get => _value; set => this._value = value; }
+    [Parameter] public T Value { get => _value; set => this._value = value; }
 
     /// <summary>
     /// Callback invoked when the value is changed (used for two-way binding).
     /// </summary>
-    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public EventCallback<T> ValueChanged { get; set; }
 
     /// <summary>
     /// Optional callback invoked anytime the value is changed, even if not bound.
     /// </summary>
-    [Parameter] public EventCallback<string> OnChanged { get; set; }
+    [Parameter] public EventCallback<T> OnChanged { get; set; }
 
     /// <summary>
     /// Expression used for validation with EditForm (e.g. @bind-Value="Model.Name").
     /// </summary>
-    [Parameter] public Expression<Func<string>> ValueExpression { get; set; } = default!;
+    [Parameter] public Expression<Func<T>> ValueExpression { get; set; } = default!;
 
     /// <summary>
     /// The EditContext provided by the parent EditForm.
@@ -140,12 +145,12 @@ public partial class InputField : ComponentBase, IDisposable
     /// <summary>
     /// Internal backing field for the bound value.
     /// </summary>
-    private string? _value;
+    private T _value;
 
     /// <summary>
     /// The original value used for dirty-checking or future use.
     /// </summary>
-    private string? _originalValue;
+    private T _originalValue;
 
     /// <summary>
     /// Holds the current validation messages from the EditContext.
@@ -186,7 +191,7 @@ public partial class InputField : ComponentBase, IDisposable
     /// This allows JavaScript to invoke C# methods on this specific Blazor component instance.
     /// It's crucial for JavaScript to 'call back' into Blazor, e.g., for debounced input events.
     /// </summary>
-    private DotNetObjectReference<InputField>? _dotNetRef;
+    private DotNetObjectReference<InputField<T>>? _dotNetRef;
 
 
     #endregion
@@ -248,11 +253,39 @@ public partial class InputField : ComponentBase, IDisposable
     /// </summary>
     private async Task HandleInput(ChangeEventArgs e)
     {
-        if (Immediate)
+        if (!Immediate)
+            return;
+
+        if (e.Value is null)
         {
-            var newValue = e.Value?.ToString() ?? string.Empty;
-            await SetValueAsync(newValue);
+            await SetValueAsync(default!);
+            return;
         }
+
+        T newValue;
+
+        if (typeof(T) == typeof(string))
+        {
+            newValue = (T)(object)e.Value.ToString()!;
+        }
+        else if (typeof(T) == typeof(int) && int.TryParse(e.Value.ToString(), out var intVal))
+        {
+            newValue = (T)(object)intVal;
+        }
+        else if (typeof(T) == typeof(double) && double.TryParse(e.Value.ToString(), out var dblVal))
+        {
+            newValue = (T)(object)dblVal;
+        }
+        else if (typeof(T) == typeof(DateTime) && DateTime.TryParse(e.Value.ToString(), out var dtVal))
+        {
+            newValue = (T)(object)dtVal;
+        }
+        else
+        {
+            throw new InvalidOperationException($"Unsupported type {typeof(T)}");
+        }
+
+        await SetValueAsync(newValue);
     }
 
     /// <summary>
@@ -260,7 +293,7 @@ public partial class InputField : ComponentBase, IDisposable
     /// </summary>
     /// <param name="newValue">The debounced value from the input field.</param>
     [JSInvokable] // Mark as invokable from JavaScript
-    public Task HandleDebouncedInputFromJs(string newValue)
+    public Task HandleDebouncedInputFromJs(T newValue)
     {
         // This is where the actual update to the Blazor component's state happens
         // after the client-side debounce.
@@ -271,9 +304,9 @@ public partial class InputField : ComponentBase, IDisposable
     /// <summary>
     /// Updates internal state, triggers binding, and notifies EditContext.
     /// </summary>
-    private async Task SetValueAsync(string newValue)
+    private async Task SetValueAsync(T newValue)
     {
-        if (_value != newValue)
+        if (!EqualityComparer<T>.Default.Equals(_value, newValue))
         {
             _value = newValue;
 
@@ -344,7 +377,7 @@ public partial class InputField : ComponentBase, IDisposable
     /// </summary>
     private string InputWrapperClass => ClassBuilder
         .Default("relative w-full")
-        .AddClass(Class)
+        .AddClass(WrapperClass)
         .Build();
 
     /// <summary>
@@ -353,6 +386,7 @@ public partial class InputField : ComponentBase, IDisposable
     private string InputClass => ClassBuilder
         .Default("peer w-full font-normal text-gray-900 appearance-none focus:outline-none focus:ring-0")
         .AddClass(GetBorderClassByVariant()) // ⬅ handles border logic
+        .AddClass(InputElementClass)
         .AddClass("opacity-50 cursor-not-allowed bg-gray-100 text-gray-500", Disabled)
         .AddClass("bg-gray-100 text-gray-500 cursor-default", ReadOnly && !Disabled && !ValidationMessages.Any())
         .AddClass(GetClassByVariantSize(
@@ -559,17 +593,17 @@ public partial class InputField : ComponentBase, IDisposable
 
         var colorVar = Color switch
         {
-            Color.Primary => "--primary",
-            Color.Secondary => "--secondary",
-            Color.Tertiary => "--tertiary",
-            Color.Success => "--success",
-            Color.Warning => "--warning",
-            Color.Info => "--info",
-            Color.Error => "--error",
-            _ => "--primary"
+            Color.Primary => "peer-focus:text-(--primary)",
+            Color.Secondary => "peer-focus:text-(--secondary)",
+            Color.Tertiary => "peer-focus:text-(--tertiary)",
+            Color.Success => "peer-focus:text-(--success)",
+            Color.Warning => "peer-focus:text-(--warning)",
+            Color.Info => "peer-focus:text-(--info)",
+            Color.Error => "peer-focus:text-(--error)",
+            _ => "peer-focus:text-(--primary)"
         };
 
-        return $"peer-focus:text-({colorVar})";
+        return colorVar;
     }
     #endregion
 }

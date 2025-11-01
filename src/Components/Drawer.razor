@@ -6,23 +6,5 @@
      tabindex="-1"
      aria-labelledby="@LabelId"
      @onclick:stopPropagation>
-    <div class="flex items-start justify-between gap-4">
-        <div id="@LabelId" role="heading" class="text-2xl font-medium text-gray-700 truncate">
-            @Title
-        </div>
-
-        <Button Type="ButtonType.Button"
-                Size="ButtonSize.ExtraSmall"
-                VisualPlacement="VisualPlacement.Start"
-                Icon="@Icons.Outlined.Close"  
-                IconSize="@Enums.Size.Medium" 
-                Color="Color.Light" 
-                Variant="Variant.Filled"
-                OnClick="Hide"
-                aria-label="Close drawer">
-        </Button>
-    </div>
-    
-
     @ChildContent
 </aside>

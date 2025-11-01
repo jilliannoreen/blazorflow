@@ -16,6 +16,7 @@ public partial class BFlowTable<TItem, TRequest> : ComponentBase
     [Parameter] public string RowClass { get; set; }
     [Parameter] public string HeaderClass { get; set; }
     [Parameter] public string Class { get; set; }
+    [Parameter] public int HeightOffset { get; set; }
 
     [Parameter] public required Func<TRequest, Task<TableResponse<TItem>>> LoadData { get; set; }
     [Parameter] public required Func<TableRequestParams, TRequest> BuildRequest { get; set; }
@@ -26,7 +27,7 @@ public partial class BFlowTable<TItem, TRequest> : ComponentBase
     [Parameter] public PaginationMode PaginationMode { get; set; } = PaginationMode.Offset;
 
 
-    private ElementReference _tableContainer;
+    private ElementReference _tableContainer, _tableHeader;
 
     private HashSet<TItem> _items = [];
     private bool _isLoading = false;
@@ -43,7 +44,7 @@ public partial class BFlowTable<TItem, TRequest> : ComponentBase
     private int _totalPages = 1;
 
     // Row height estimate for JS interop
-    private const int RowHeight = 58;
+    private const int RowHeight = 54;
 
     private string TableRowClass => ClassBuilder
         .Default("focus:outline-none odd:bg-gray-50 even:bg-white hover:bg-blue-50")
@@ -70,7 +71,7 @@ public partial class BFlowTable<TItem, TRequest> : ComponentBase
             var estimatedRowCount = await JSRuntime.InvokeAsync<int>(
                 "blazorFlowInterop.table.getAvailableRowCount",
                 CancellationToken.None,
-                [_tableContainer, RowHeight ]
+                [_tableContainer, _tableHeader, HeightOffset, RowHeight ]
             );
 
             _pageSize = estimatedRowCount;
