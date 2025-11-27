@@ -1,0 +1,67 @@
+@typeparam T 
+
+<div class="@InputWrapperClass">
+    @if (!EnableFloatingLabel)
+    {
+        <!-- Static label appears ABOVE the input -->
+        <label for="@Id" class="@LabelClass">@Label</label>
+    }
+    
+    <div class="relative">
+        @if (VisualPlacement == Enums.VisualPlacement.Start)
+        {
+            <span class="@GetIconClass">
+                @if (!string.IsNullOrWhiteSpace(Text))
+                {
+                    <div class="@GetTextValueSizeClass()">@Text</div>
+                }
+                else if (!string.IsNullOrWhiteSpace(Icon))
+                {
+                    <Icon SvgIcon="@(HasError ? Icons.Icons.Outlined.Error : Icon)" Size="@IconSize"></Icon>
+                }
+            </span>
+        }
+
+        <input @ref="_inputElementRef"
+               @bind:get="Value"
+               @bind:set="HandleDebouncedInputFromJs"
+               @bind:event="@((Immediate ? "oninput" : "onchange"))"
+               type="@Type.ToString()"
+               id="@Id"
+               placeholder="@PlaceholderValue"
+               class="@InputClass"
+               disabled="@Disabled"
+               readonly="@ReadOnly"
+               aria-invalid="@ValidationMessages.Any()"
+               autocomplete="@AutoComplete"
+               aria-describedby="@AriaDescribedById"
+               @attributes="UserAttributes"/>
+
+        @if (VisualPlacement == Enums.VisualPlacement.End || HasError)
+        {
+            <span class="@GetIconClass">
+                <Icon SvgIcon="@(HasError ? Icons.Icons.Outlined.Error : Icon)" Size="@IconSize"></Icon>
+            </span>
+        }
+
+        @if (EnableFloatingLabel)
+        {
+            <!-- Floating label appears INSIDE input -->
+            <label for="@Id" class="@LabelClass">@Label</label>
+        }
+    </div>
+
+    @if (HasError)
+    {
+        <p id="@($"{Id}-error")" class="my-2 text-xs text-red-600 dark:text-red-400">
+            @(ErrorText ?? ValidationMessages.FirstOrDefault())
+        </p>
+    }
+    else if (!string.IsNullOrWhiteSpace(HelperText))
+    {
+        <p id="@($"{Id}-helper-text")" class="my-2 text-xs text-gray-500 dark:text-gray-400">
+            @HelperText
+        </p>
+    }
+    
+</div>

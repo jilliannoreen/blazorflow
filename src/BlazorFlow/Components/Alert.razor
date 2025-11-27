@@ -1,0 +1,25 @@
+@if (!string.IsNullOrEmpty(Message))
+{
+    <div class="@AlertClass" role="alert" aria-atomic="true">
+        @if (ShowIcon)
+        {
+            <Icon SvgIcon="@(string.IsNullOrWhiteSpace(Icon) ? Icons.Icons.Outlined.AlertCircle : Icon)"></Icon>
+        }
+        
+        <div class="alert-content">
+            @if (!string.IsNullOrEmpty(Title))
+            {
+                <h4 class="font-medium text-base">@Title</h4>
+            }
+
+            <p class="font-normal text-sm">@Message</p>
+        </div>
+        
+        @if (AdditionalContent != null)
+        {
+            <div class="additional-content">
+                @AdditionalContent
+            </div>
+        }
+    </div>
+}

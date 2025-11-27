@@ -1,0 +1,10 @@
+<button type="button"
+        class="@GetDropdownItemClass()"
+        role="menuitem"
+        tabindex="0"
+        @onclick="HandleClick"
+        @onclick:stopPropagation="true"
+        @attributes="AdditionalAttributes"
+        disabled="@Disabled">
+    @ChildContent
+</button>

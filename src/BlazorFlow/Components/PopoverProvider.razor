@@ -1,0 +1,9 @@
+
+
+
+@foreach (var popover in PopoverService.Popovers)
+{
+    <div class="fixed z-[9999]" style="@GetStyle(popover.Anchor)">
+        @popover.Content
+    </div>
+}

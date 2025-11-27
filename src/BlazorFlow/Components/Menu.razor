@@ -1,0 +1,7 @@
+<button @ref="_triggerRef" @onclick="Toggle" class="flex items-center gap-1 px-3 py-1.5 bg-gray-50 border rounded-md hover:bg-gray-100">
+    @if (!string.IsNullOrEmpty(Icon))
+    {
+        <Icon SvgIcon="@Icon" Size="Size.Small" />
+    }
+    <span>@Text</span>
+</button>

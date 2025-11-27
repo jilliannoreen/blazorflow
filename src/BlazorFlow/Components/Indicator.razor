@@ -1,0 +1,7 @@
+@using BlazorFlow.Utilities
+<span class="@IndicatorClass">
+    @if (!string.IsNullOrWhiteSpace(Icon))
+    {
+        <Icon SvgIcon="@Icon" Size="Size"></Icon>
+    }
+</span>

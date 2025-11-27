@@ -1,0 +1,28 @@
+<div class="relative inline-block" tabindex="0">
+    <Button Icon="@Icon"
+            Variant="@TriggerButtonVariant"
+            Color="@TriggerButtonColor"
+            VisualPlacement="VisualPlacement.End"
+            Size="ButtonSize.ExtraSmall"
+            Type="ButtonType.Button"
+            OnClick="@(args => ToggleDropdown(args))"
+            Class="!py-0"
+            aria-expanded="@_isOpen"
+            aria-haspopup="true">
+        @Label
+    </Button>
+    
+    @if (_isOpen)
+    {
+        <CascadingValue Value="this">
+            <div class="@MenuClass"
+                 role="menu"
+                 aria-orientation="vertical"
+                 aria-labelledby="@_id">
+                <div class="py-1 text-sm text-gray-700 dark:text-gray-200" role="none">
+                    @ChildContent
+                </div>
+            </div>
+        </CascadingValue>
+    }
+</div>

@@ -1,0 +1,14 @@
+<div class="flex items-center mb-2">
+    <input id="@_id" 
+           type="checkbox"
+           checked="@Checked"
+           @onchange="OnCheckboxChanged"
+           class="@InputClass" 
+           role="checkbox"
+           aria-checked="@Checked"
+           aria-disabled="@Disabled.ToString().ToLower()"
+           disabled="@Disabled"
+           tabindex="@(Disabled ? -1 : 0)"
+           @attributes="AdditionalAttributes">
+    <label for="@_id" class="@LabelClass">@Label</label>
+</div>

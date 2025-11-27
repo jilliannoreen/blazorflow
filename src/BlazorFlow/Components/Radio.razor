@@ -1,0 +1,20 @@
+@typeparam T
+
+<div class="flex items-center space-x-2" @onclick="ToggleIfNotDisabled">
+    <input
+        id="@Id"
+        name="@Name"
+        type="radio"
+        class="@InputClass"
+        checked="@IsChecked"
+        disabled="@Disabled"
+        aria-disabled="@Disabled"
+        aria-checked="@IsChecked.ToString().ToLower()"
+        @attributes="AdditionalAttributes" />
+
+
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <label for="@Id" class="select-none cursor-pointer font-normal">@Label</label>
+    }
+</div>

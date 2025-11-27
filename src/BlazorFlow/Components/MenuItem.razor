@@ -1,0 +1,27 @@
+<li class="relative px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between items-center"
+    @onmouseenter="OpenSubMenu" @onmouseleave="CloseSubMenu" @onclick="HandleClick">
+
+    <div class="flex items-center gap-2">
+        @if (!string.IsNullOrEmpty(Icon))
+        {
+            <Icon SvgIcon="@Icon" Size="Size.Small" />
+        }
+        <span>@Text</span>
+    </div>
+
+    @if (HasChildren)
+    {
+        <Icon SvgIcon="@Icons.Icons.Outlined.ChevronDown" Size="Size.Small" />
+    }
+
+    @if (HasChildren && _isSubOpen)
+    {
+        <div class="absolute top-0 left-full ml-1 z-[60]">
+            <Popover>
+                <ul class="py-1 text-sm text-gray-700">
+                    @ChildContent
+                </ul>
+            </Popover>
+        </div>
+    }
+</li>
